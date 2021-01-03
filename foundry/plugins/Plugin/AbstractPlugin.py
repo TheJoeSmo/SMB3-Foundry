@@ -1,5 +1,6 @@
 
 
+from typing import Final
 from abc import abstractmethod
 
 
@@ -9,7 +10,12 @@ class AbstractPlugin:
     """
 
     def __init__(self, name: str) -> None:
-        self.name = name
+        self._name: Final[str] = name
+
+    @property
+    def name(self) -> str:
+        """A property for accessing name, """
+        return self._name
 
     @abstractmethod
     def create(self) -> bool:
