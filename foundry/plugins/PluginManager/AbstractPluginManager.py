@@ -27,28 +27,28 @@ class AbstractPluginManager(AbstractPlugin, ABC):
         self.plugins = [handler(plugin, enabled) for plugin, enabled in plugins.items()]
 
     @abstractmethod
-    def create_plugin(self, plugin: AbstractPlugin) -> None:
+    def create_plugin(self, plugin: AbstractPlugin) -> bool:
         """
         Initializes the Plugin and converts it to a PluginHandler for later use
         :param plugin: A Plugin that has not been created yet
         """
 
     @abstractmethod
-    def delete_plugin(self, plugin: AbstractPlugin) -> None:
+    def delete_plugin(self, plugin: AbstractPlugin) -> bool:
         """
         Destroys the Plugin and cleans up anything needed
         :param plugin: A Plugin that will be destroyed
         """
 
     @abstractmethod
-    def enable_plugin(self, plugin: AbstractPlugin):
+    def enable_plugin(self, plugin: AbstractPlugin) -> bool:
         """
         Enables a Plugin and does any additional requirements
         :param plugin: A Plugin that will be enabled
         """
 
     @abstractmethod
-    def disable_plugin(self, plugin: AbstractPlugin):
+    def disable_plugin(self, plugin: AbstractPlugin) -> bool:
         """
         Disables a Plugin and does any additional requirements
         :param plugin: A Plugin that will be disabled
