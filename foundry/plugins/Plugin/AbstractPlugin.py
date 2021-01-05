@@ -9,7 +9,7 @@ class AbstractPlugin:
     An interface of what a Plugin should be
     """
 
-    def __init__(self, name: str) -> None:
+    def __init__(self, name: str, **kwargs) -> None:
         self._name: Final[str] = name
 
     @property
