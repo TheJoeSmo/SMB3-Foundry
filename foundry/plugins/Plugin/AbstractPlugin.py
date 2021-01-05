@@ -39,7 +39,7 @@ class AbstractPlugin:
         """
 
     @abstractmethod
-    def disabled(self) -> bool:
+    def disable(self) -> bool:
         """
         Disable itself and handles any other disabling required
         :return: a bool depending if it disabled itself successfully
