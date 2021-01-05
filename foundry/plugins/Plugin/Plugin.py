@@ -17,7 +17,8 @@ class Plugin(AbstractPlugin):
             create: Callable,
             delete: Callable,
             enable: Callable,
-            disable: Callable
+            disable: Callable,
+            **kwargs
     ):
         super().__init__(name)
         self._create = create
