@@ -16,7 +16,7 @@ class AbstractPluginManager(AbstractPlugin, ABC):
     own unit that can be tested and replaced with relative ease.
     """
 
-    def __init__(self, name: str, handler: Callable, plugins: Dict[AbstractPlugin, bool]) -> None:
+    def __init__(self, name: str, handler: Callable, plugins: Dict[AbstractPlugin, bool], **kwargs) -> None:
         """
         Creates a series of plugins that cna be handled
         :param handler: An implementation of AbstractPluginHandler to be used to generate
