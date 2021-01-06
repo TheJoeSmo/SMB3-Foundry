@@ -12,7 +12,10 @@ class AbstractToggleable:
     """
 
     def __init__(self, state: Optional[bool] = None, **kwargs):
-        self._state = state
+        if state is None:
+            self._state = state
+        else:
+            self.state = state
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self._state})"
@@ -30,6 +33,7 @@ class AbstractToggleable:
     @state.setter
     def state(self, state: bool) -> None:
         self._state = state
+        self.enable() if self.state else self.disable()
 
     @abstractmethod
     def enable(self, *args, **kwargs) -> bool:
