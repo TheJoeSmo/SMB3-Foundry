@@ -9,6 +9,8 @@ from foundry.core.Action.Action import Action
 class TestClass:
     def __init__(self):
         self.value = 0
+        self.add_one()
+        self.add_value(-1)  # initialize the actions
 
     @action_decorator("add_one", "add_one")
     def add_one(self) -> int:
@@ -39,7 +41,7 @@ def test_complex_method_call():
 
 def test_action():
     test, copy = TestClass(), TestClass()
-    action: Action = test.add_one.action
+    action: Action = test._actions["add_one"]
     action.observer.attach_observer(lambda value: setattr(copy, "value", value))
     test.add_one()
     assert copy.value == 1
