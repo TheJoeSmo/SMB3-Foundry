@@ -47,3 +47,13 @@ def test_observer():
     assert copy.value == 1
     test.add_one()
     assert copy.value == 7
+
+
+def test_observer_for_each_instance():
+    test_one, test_two, copy = TestClass(), TestClass(), TestClass()
+    observer: AbstractObservable = test_one.add_one.observer
+    observer.attach_observer(lambda value: setattr(copy, "value", value))
+    test_one.add_one()
+    test_two.add_value(5)
+    test_two.add_one()
+    assert copy.value == 1
