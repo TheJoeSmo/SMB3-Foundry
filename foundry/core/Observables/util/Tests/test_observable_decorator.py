@@ -9,6 +9,8 @@ from foundry.core.Observables.AbstractObservable import AbstractObservable
 class TestClass:
     def __init__(self):
         self.value = 0
+        self.add_one()
+        self.add_value(-1)  # Set up the observers for the class
 
     @observable_decorator("add_one")
     def add_one(self) -> int:
@@ -39,7 +41,7 @@ def test_complex_method_call():
 
 def test_observer():
     test, copy = TestClass(), TestClass()
-    observer: AbstractObservable = test.add_one.observer
+    observer: AbstractObservable = test._observables["add_one"]
     observer.attach_observer(lambda value: setattr(copy, "value", value))
     test.add_one()
     assert copy.value == 1
@@ -51,7 +53,7 @@ def test_observer():
 
 def test_observer_for_each_instance():
     test_one, test_two, copy = TestClass(), TestClass(), TestClass()
-    observer: AbstractObservable = test_one.add_one.observer
+    observer: AbstractObservable = test_one._observables["add_one"]
     observer.attach_observer(lambda value: setattr(copy, "value", value))
     test_one.add_one()
     test_two.add_value(5)
