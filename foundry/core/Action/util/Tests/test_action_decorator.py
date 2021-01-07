@@ -37,7 +37,7 @@ def test_complex_method_call():
     assert test.value == 5
 
 
-def test_observer():
+def test_action():
     test, copy = TestClass(), TestClass()
     action: Action = test.add_one.action
     action.observer.attach_observer(lambda value: setattr(copy, "value", value))
