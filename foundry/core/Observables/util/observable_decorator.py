@@ -13,17 +13,28 @@ class ObservableDecorator:
     def __init__(self, func: Callable, observable_name: str):
         update_wrapper(self, func)
         self.func = func
-        self.observer = Observable(name=observable_name)
+        self.observable_name = observable_name
 
     def __get__(self, instance, owner):
+        self.create_observable(instance)
         func = partial(self.__call__, instance)
-        func.observer = self.observer  # make the observable visible through get
         return func
 
     def __call__(self, instance, *args, **kwargs):
+        self.create_observable(instance)
         result = self.func(instance, *args, **kwargs)
-        self.observer(result=result)
+        instance._observables[self.observable_name](result=result)
         return result
+
+    def create_observable(self, instance):
+        """
+        Generates an observable for the instance of the class
+        :return: an observable
+        """
+        if not hasattr(instance, "_observables"):
+            instance._observables = {}
+        if self.observable_name not in instance._observables:
+            instance._observables.update({self.observable_name: Observable(name=self.observable_name)})
 
 
 def observable_decorator(observable_name: str):
