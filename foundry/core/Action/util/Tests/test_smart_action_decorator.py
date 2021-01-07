@@ -41,7 +41,7 @@ def test_complex_method_call():
 
 def test_action():
     test, copy = TestClass(), TestClass()
-    action: Action = test._actions["add_one"]
+    action: Action = test._actions["add_one_action"]
     action.observer.attach_observer(lambda value: setattr(copy, "value", value))
     test.add_one()
     assert copy.value == 1
@@ -53,7 +53,7 @@ def test_action():
 
 def test_action_for_each_instance():
     test_one, test_two, copy = TestClass(), TestClass(), TestClass()
-    action: Action = test_one._actions["add_one"]
+    action: Action = test_one._actions["add_one_action"]
     action.observer.attach_observer(lambda value: setattr(copy, "value", value))
     test_one.add_one()
     test_two.add_value(5)
