@@ -1,6 +1,6 @@
 
 
-class UninitializedStateException(Exception):
+class UninitializedStateException(AttributeError):
     """
     An error for a state not being initialized
     """
