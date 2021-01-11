@@ -23,13 +23,14 @@ class PluginCreator(AbstractPluginCreator):
         self.creator = creator
         super().__init__(destination_path, locator)
 
-    def validate_plugin(self, plugin_path: Path) -> bool:
+    def validate_plugin(self, plugin, plugin_path: Path) -> bool:
         """
         Ensure the paths will not override any data
+        :param plugin: The uninitialized Plugin in need of being created
         :param plugin_path: The path to the Plugin
         :return: if the Plugin is valid
         """
-        return self.validator(self, plugin_path)
+        return self.validator(self, plugin, plugin_path)
 
     def _create_plugin(self, plugin: AbstractPlugin, plugin_path: Path):
         """

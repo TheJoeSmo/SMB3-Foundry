@@ -27,15 +27,16 @@ class AbstractPluginCreator:
         :param plugin_path: The path to the directory of any required data for the Plugin
         :return: if the Plugin was created
         """
-        if not self.validate_plugin(plugin_path):
+        if not self.validate_plugin(plugin, plugin_path):
             return False
         self._create_plugin(plugin, plugin_path)
         return True
 
     @abstractmethod
-    def validate_plugin(self, plugin_path: Path) -> bool:
+    def validate_plugin(self, plugin, plugin_path: Path) -> bool:
         """
         Ensure the paths will not override any data
+        :param plugin: The uninitialized Plugin in need of being created
         :param plugin_path: The path to the Plugin
         :return: if the Plugin is valid
         """
