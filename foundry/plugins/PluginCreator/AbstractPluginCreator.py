@@ -30,6 +30,7 @@ class AbstractPluginCreator:
         if not self.validate_plugin(plugin_path):
             return False
         self._create_plugin(plugin, plugin_path)
+        return True
 
     @abstractmethod
     def validate_plugin(self, plugin_path: Path) -> bool:
