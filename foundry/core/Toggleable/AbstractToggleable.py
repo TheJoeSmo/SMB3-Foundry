@@ -32,8 +32,9 @@ class AbstractToggleable:
 
     @state.setter
     def state(self, state: bool) -> None:
-        self._state = state
-        self.enable() if self.state else self.disable()
+        if not hasattr(self, "_state") or state != self._state:
+            self._state = state
+            self.enable() if self.state else self.disable()
 
     @abstractmethod
     def enable(self, *args, **kwargs) -> bool:
