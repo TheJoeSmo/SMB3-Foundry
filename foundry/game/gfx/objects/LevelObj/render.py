@@ -201,7 +201,7 @@ def render(
 
             offset = y % height
 
-            rows.append(amount_left * left + slopes[offset : offset + slope_width] + amount_right * right)
+            rows.append(amount_left * left + slopes[offset: offset + slope_width] + amount_right * right)
 
         if orientation in [GeneratorType.DIAG_UP_RIGHT]:
             for row in rows:
