@@ -91,7 +91,6 @@ class ObjectLikeLevelObjectRendererAdapter(ObjectLike):
     @selected.setter
     def selected(self, selected: bool) -> None:
         self.level_object_renderer.selected = selected
-        self.level_object_renderer.has_updated = True
 
     @property
     def blocks(self) -> List[int]:
@@ -150,9 +149,14 @@ class ObjectLikeLevelObjectRendererAdapter(ObjectLike):
         return self.level_object_renderer.object_set.get_definition_of(self.level_object_renderer.type).description
 
     @property
+    def index_in_level(self) -> int:
+        return self.level_object_renderer.index_in_level
+
+    @property
     def rect(self) -> QRect:
         rect = self.level_object_renderer.rect
-        return QRect(rect[0][0], rect[0][1], rect[1][0], rect[1][1])
+        # Grab the actual size as this is what will show up in the actual editor
+        return QRect(rect[0][0], rect[0][1], self.rendered_width, self.rendered_height)
 
     @rect.setter
     def rect(self, rect: QRect) -> None:
