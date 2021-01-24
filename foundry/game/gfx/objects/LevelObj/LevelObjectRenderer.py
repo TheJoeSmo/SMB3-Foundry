@@ -53,6 +53,15 @@ class LevelObjectRenderer(AbstractLevelObject):
         self._blocks = None
 
     @property
+    def selected(self) -> bool:
+        return self._selected
+
+    @selected.setter
+    def selected(self, selected: bool) -> None:
+        self._selected = selected
+        self.has_updated = True
+
+    @property
     def object_set(self) -> ObjectSet:
         return self.level_object.object_set
 
@@ -201,5 +210,6 @@ class LevelObjectRenderer(AbstractLevelObject):
             self.blocks
         )
 
+        self._block_group_renderer.selected = self.selected  # Update if selected
         self._block_group_renderer.rect = ((rect.x(), rect.y()), (rect.width(), rect.height()))
         self._block_group_renderer.blocks = blocks
