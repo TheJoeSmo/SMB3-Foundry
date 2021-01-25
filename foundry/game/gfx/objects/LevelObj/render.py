@@ -79,7 +79,7 @@ def render(
         base_y = SKY
 
         for _ in range(y_position):
-            blocks_to_draw.extend(blocks[0 : width])
+            blocks_to_draw.extend(blocks[0: width])
 
         blocks_to_draw.extend(blocks[-width:])
 
