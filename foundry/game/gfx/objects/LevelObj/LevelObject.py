@@ -111,9 +111,11 @@ class LevelObject(AbstractLevelObject):
 
         pos_main, pos_sec = data[1], data[0] & 0b0001_1111
         if is_vertical:
-            x, y = pos_sec, pos_main
-        else:
-            x, y = pos_main, pos_sec
+            offset = (pos_main // SCREEN_WIDTH) * SCREEN_HEIGHT
+
+            pos_sec += offset
+            pos_main %= SCREEN_WIDTH
+        x, y = pos_main, pos_sec
 
         # describes what object it is
         index = data[2]
@@ -151,7 +153,10 @@ class LevelObject(AbstractLevelObject):
         """
 
         if is_vertical:
-            pos_main, pos_sec = self.y, self.x
+            offset = self.y // SCREEN_HEIGHT
+
+            pos_main = self.x + offset * SCREEN_WIDTH
+            pos_sec = self.y % SCREEN_HEIGHT
         else:
             pos_main, pos_sec = self.x, self.y
 
