@@ -52,6 +52,10 @@ class LevelObjectRenderer(AbstractLevelObject):
         )
         self._blocks = None
 
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.level_object}, {self.palette_group}, {self.graphics_set}," \
+               f"{self.objects_ref}, {self.index_in_level}, {self.is_vertical}, {self.size_minimal})"
+
     @property
     def selected(self) -> bool:
         return self._selected
