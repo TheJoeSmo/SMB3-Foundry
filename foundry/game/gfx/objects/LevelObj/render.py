@@ -207,7 +207,7 @@ def render(
             for row in rows:
                 row.reverse()
 
-        if orientation in [GeneratorType.DIAG_DOWN_RIGHT, GeneratorType.DIAG_UP_RIGHT] and height > width:
+        if orientation in [GeneratorType.DIAG_DOWN_RIGHT, GeneratorType.DIAG_UP_RIGHT]:
             rows.reverse()
 
         if orientation == GeneratorType.DIAG_DOWN_RIGHT and height > width:
