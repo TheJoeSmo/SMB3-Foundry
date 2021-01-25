@@ -253,7 +253,7 @@ class LevelObject(AbstractLevelObject):
             self._width = 0
         elif self.index_expansion == EXPANDS_HORIZ:
             self._width = min(max(0, width), 0x0F)
-            self._index = (self.index & 0xF0) + width
+            self._index = (self.index & 0xF0) + self._width
         else:
             self._width = min(max(0, width), 0xFF)
 
@@ -269,7 +269,7 @@ class LevelObject(AbstractLevelObject):
             self._height = 0
         elif self.index_expansion == EXPANDS_VERT:
             self._height = min(max(0, height), 0x0F)
-            self._index = (self.index & 0xF0) + height
+            self._index = (self.index & 0xF0) + self._height
         else:
             self._height = min(max(0, height), 0xFF)
 
