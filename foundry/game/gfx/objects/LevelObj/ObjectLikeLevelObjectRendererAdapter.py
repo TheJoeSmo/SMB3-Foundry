@@ -81,6 +81,10 @@ class ObjectLikeLevelObjectRendererAdapter(ObjectLike):
         return cls(level_obj_renderer)
 
     @property
+    def palette_group(self):
+        return self.level_object_renderer.palette_group
+
+    @property
     def is_single_block(self) -> bool:
         return self.level_object_renderer.index <= 0x0F
 
@@ -110,11 +114,11 @@ class ObjectLikeLevelObjectRendererAdapter(ObjectLike):
 
     @property
     def rendered_width(self) -> int:
-        return self.level_object_renderer.width
+        return self.level_object_renderer.block_group_renderer.width
 
     @property
     def rendered_height(self) -> int:
-        return self.level_object_renderer.height
+        return self.level_object_renderer.block_group_renderer.height
 
     @property
     def object_index(self) -> int:
@@ -154,13 +158,16 @@ class ObjectLikeLevelObjectRendererAdapter(ObjectLike):
 
     @property
     def rect(self) -> QRect:
-        rect = self.level_object_renderer.rect
-        # Grab the actual size as this is what will show up in the actual editor
-        return QRect(rect[0][0], rect[0][1], self.rendered_width, self.rendered_height)
+        # Represent what it actually looks like by retrieving renderer's rect
+        x = self.level_object_renderer.block_group_renderer.x
+        y = self.level_object_renderer.block_group_renderer.y
+        return QRect(x, y, self.rendered_width, self.rendered_height)
 
     @rect.setter
     def rect(self, rect: QRect) -> None:
         x, y, width, height = rect.x(), rect.y(), rect.width(), rect.height()
+        width = width - self.rendered_width + self.level_object_renderer.width
+        height = height - self.rendered_height + self.level_object_renderer.height
         self.level_object_renderer.rect = ((x, y), (width, height))
 
     def is_4byte(self) -> bool:
@@ -195,8 +202,11 @@ class ObjectLikeLevelObjectRendererAdapter(ObjectLike):
         return self.level_object_renderer.position
 
     def resize_by(self, dx, dy):
-        size = self.level_object_renderer.size
-        self.level_object_renderer.size = (size[0] + dx, size[1] + dy)
+        if not dx:
+            dx = self.level_object_renderer.width
+        if not dy:
+            dy = self.level_object_renderer.height
+        self.level_object_renderer.size = (dx, dy)
 
     def point_in(self, x: int, y: int) -> bool:
         return self.rect.contains(x, y)
@@ -226,3 +236,6 @@ class ObjectLikeLevelObjectRendererAdapter(ObjectLike):
 
     def primary_expansion(self):
         return self.level_object_renderer.index_expansion
+
+    def as_image(self):
+        return self.level_object_renderer.as_image()
