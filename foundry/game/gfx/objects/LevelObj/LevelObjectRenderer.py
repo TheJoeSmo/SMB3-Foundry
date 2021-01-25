@@ -184,10 +184,14 @@ class LevelObjectRenderer(AbstractLevelObject):
         Updates the BlockGroupRenderer to utilize the new blocks and rect determined by the render function
         """
         primary_len = self.index & 0x0F
+        if self.index <= 0x0F:
+            primary_len, secondary_len = 1, 0  # Single Block
         if self.bytes == 4 and self.index_expansion == EXPANDS_HORIZ:
             secondary_len, primary_len = self.height, self.width
         elif self.bytes == 4 and self.index_expansion == EXPANDS_VERT:
             secondary_len, primary_len = self.height, self.width
+        elif self.index_expansion == EXPANDS_VERT:
+            secondary_len, primary_len = self.width, self.height
         else:
             secondary_len = 0
 
