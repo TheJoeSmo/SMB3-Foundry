@@ -7,7 +7,7 @@ from PySide2.QtWidgets import QLabel, QVBoxLayout, QWidget
 
 from foundry.game.ObjectDefinitions import GeneratorType
 from foundry.game.gfx.objects.EnemyItem import EnemyObject
-from foundry.game.gfx.objects.LevelObject import GROUND
+from foundry.game.gfx.objects.LevelObj.render import GROUND
 from foundry.game.level.LevelRef import LevelRef
 from foundry.gui.HeaderEditor import SCROLL_DIRECTIONS
 from foundry.gui.util import clear_layout
