@@ -7,7 +7,8 @@ from PySide2.QtWidgets import QComboBox, QHBoxLayout, QLayout, QStatusBar, QTool
 from foundry.game.gfx.GraphicsSet import GRAPHIC_SET_NAMES
 from foundry.game.gfx.drawable.Block import Block, get_block
 from foundry.game.gfx.objects.Jump import Jump
-from foundry.game.gfx.objects.LevelObject import LevelObject
+from foundry.game.gfx.objects.LevelObj.ObjectLikeLevelObjectRendererAdapter import \
+    ObjectLikeLevelObjectRendererAdapter as LevelObject
 from foundry.game.gfx.objects.LevelObjectFactory import LevelObjectFactory
 from foundry.gui.CustomChildWindow import CustomChildWindow
 from foundry.gui.LevelSelector import OBJECT_SET_ITEMS
@@ -186,7 +187,7 @@ class ObjectDrawArea(QWidget):
 
         painter.translate(
             QPoint(
-                -Block.WIDTH * self.current_object.rendered_base_x, -Block.HEIGHT * self.current_object.rendered_base_y
+                -Block.WIDTH * self.current_object.x_position, -Block.HEIGHT * self.current_object.y_position
             )
         )
 
@@ -216,8 +217,8 @@ class BlockArray(QWidget):
             block = get_block(
                 block_index,
                 self.level_object.palette_group,
-                self.level_object.graphics_set,
-                self.level_object.tsa_data,
+                self.level_object.level_object_renderer.graphics_set,
+                self.level_object.level_object_renderer.block_group_renderer.tsa_data,
             )
             self.layout().addWidget(BlockArea(block))
 
