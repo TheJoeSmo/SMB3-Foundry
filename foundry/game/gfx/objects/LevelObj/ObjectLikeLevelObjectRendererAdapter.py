@@ -12,10 +12,6 @@ from foundry.game.gfx.objects.ObjectLike import ObjectLike
 from foundry.game.gfx.objects.LevelObj.LevelObject import LevelObject
 from foundry.game.gfx.objects.LevelObj.LevelObjectRenderer import LevelObjectRenderer
 from foundry.game.gfx.drawable.Block import Block
-
-
-ENDING_STR = {
-    EndType.UNIFORM: "Uniform",
     EndType.END_ON_TOP_OR_LEFT: "Top or Left",
     EndType.END_ON_BOTTOM_OR_RIGHT: "Bottom or Right",
     EndType.TWO_ENDS: "Top & Bottom/Left & Right",
