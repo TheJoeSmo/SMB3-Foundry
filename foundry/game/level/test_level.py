@@ -2,7 +2,8 @@ import pytest
 
 from foundry.game.gfx.objects.EnemyItem import EnemyObject
 from foundry.game.gfx.objects.Jump import Jump
-from foundry.game.gfx.objects.LevelObject import LevelObject
+from foundry.game.gfx.objects.LevelObj.ObjectLikeLevelObjectRendererAdapter import \
+    ObjectLikeLevelObjectRendererAdapter as LevelObject
 from foundry.game.level.Level import LEVEL_DEFAULT_HEIGHT
 
 
