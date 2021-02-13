@@ -1215,6 +1215,8 @@ class MainWindow(QMainWindow):
         self.update_gui_for_level()
 
     def update_gui_for_level(self):
+        restore_all_palettes()
+
         self._enable_disable_gui_elements()
 
         self.update_title()
