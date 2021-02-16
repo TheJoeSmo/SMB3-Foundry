@@ -18,6 +18,11 @@ class ObservableColor:
     def __str__(self) -> str:
         return self._color.__str__()
 
+    @classmethod
+    def from_color(cls, color: Color):
+        """Generates a ObservableColor from a color"""
+        return cls(color.red, color.green, color.blue)
+
     @property
     def nes_index(self) -> Optional[int]:
         """Returns the estimated index of the color in terms of the NES palette"""
