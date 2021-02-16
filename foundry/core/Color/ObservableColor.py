@@ -1,5 +1,7 @@
 
 
+from typing import Optional
+
 from ..Observables.GenericObservable import GenericObservable
 from Color import Color
 
@@ -12,6 +14,19 @@ class ObservableColor:
     def __init__(self, red: int, green: int, blue: int):
         self._color = Color(red, green, blue)
         self.update_action = GenericObservable("color_update")
+
+    def __str__(self) -> str:
+        return self._color.__str__()
+
+    @property
+    def nes_index(self) -> Optional[int]:
+        """Returns the estimated index of the color in terms of the NES palette"""
+        return self._color.nes_index
+
+    @property
+    def nes_str(self) -> str:
+        """Returns the color as a NES string"""
+        return self._color.nes_str
 
     @property
     def red(self) -> int:
