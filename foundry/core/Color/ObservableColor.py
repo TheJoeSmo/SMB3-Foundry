@@ -66,4 +66,4 @@ class ObservableColor:
     def color(self, color: Color) -> None:
         self._color = color
         if len(self.update_action.observers):
-            self.update_action.notify_observers(color)
+            self.update_action.notify_observers(self.color)
