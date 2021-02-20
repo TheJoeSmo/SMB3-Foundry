@@ -24,6 +24,11 @@ class PatternTableHandler:
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.pattern_table}) with data {self.data}"
 
+    @property
+    def number(self) -> int:
+        """for legacy reasons"""
+        return 0
+
     def get_data(self, pattern_table: Tuple[int, int, int, int, int, int]) -> bytearray:
         """Caches the data for quick access"""
         data = bytearray()
