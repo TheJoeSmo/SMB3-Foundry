@@ -41,6 +41,11 @@ class ObservablePalette(Palette):
         pal[key] = ObservableColor.from_color(value)
         self.palette = pal
 
+    @classmethod
+    def from_palette(cls, palette: Palette):
+        """Generates a ObservableColor from a color"""
+        return cls(palette.color_0, palette.color_1, palette.color_2, palette.color_3)
+
     @property
     def nes_str(self) -> str:
         """Returns the color as a NES string"""
