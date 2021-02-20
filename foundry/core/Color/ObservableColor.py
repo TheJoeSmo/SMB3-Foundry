@@ -3,7 +3,7 @@
 from typing import Optional
 
 from ..Observables.GenericObservable import GenericObservable
-from Color import Color
+from .Color import Color
 
 
 class ObservableColor:
