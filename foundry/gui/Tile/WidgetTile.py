@@ -14,7 +14,7 @@ from foundry.core.Size.Size import Size
 from foundry.gui.Tile.AbstractTile import AbstractTile
 
 
-class TileWidget(QWidget):
+class WidgetTile(QWidget):
     """A class for keeping track of a Tile"""
     def __init__(
             self,
