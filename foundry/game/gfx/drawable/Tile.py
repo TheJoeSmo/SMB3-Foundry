@@ -1,4 +1,11 @@
-from PySide2.QtGui import QImage
+
+
+from typing import Union
+from PySide2.QtGui import QImage, QPainter, Qt, QColor
+
+from foundry.core.PaletteSet.PaletteSet import PaletteSet
+from foundry.core.Palette.Palette import Palette
+from foundry.core.PatternTable.PatternTableHandler import PatternTableHandler
 
 from foundry.game.gfx.GraphicsSet import GraphicsSet
 from foundry.game.gfx.Palette import NESPalette, PaletteGroup
@@ -18,16 +25,19 @@ class Tile:
     PIXEL_COUNT = WIDTH * HEIGHT
     SIZE = 2 * PIXEL_COUNT // 8  # 1 pixel is defined by 2 bits
 
+    _tile_cache = {}
+
     def __init__(
         self,
         object_index: int,
-        palette_group: PaletteGroup,
+        palette_group: Union[PaletteGroup, PaletteSet],
         palette_index: int,
-        graphics_set: GraphicsSet,
+        graphics_set: Union[GraphicsSet, PatternTableHandler],
         mirrored=False,
     ):
         start = object_index * Tile.SIZE
 
+        self.tile_hash = (object_index, str(palette_group), graphics_set.number)  # hash for caching
         self.cached_tiles = dict()
 
         self.palette = palette_group[palette_index]
@@ -71,6 +81,30 @@ class Tile:
 
         assert len(self.pixels) == 3 * Tile.PIXEL_COUNT
 
+    @classmethod
+    def from_palette(
+        cls,
+        object_index: int,
+        palette: Palette,
+        graphics_set: Union[GraphicsSet, PatternTableHandler],
+        mirrored=False,
+    ):
+        """
+        Generates a Tile from a Palette instead of requiring a PaletteSet
+        :param object_index: The index for the Tile in the PatternTableHandler
+        :param palette: The set of colors used for the Tile
+        :param graphics_set: The PatternTableHandler used to find the tile in ROM
+        :param mirrored: If the tile is flipped vertically
+        :return: A Tile
+        """
+        return cls(
+            object_index,
+            PaletteSet(palette, palette, palette, palette),
+            0,
+            graphics_set,
+            mirrored
+        )
+
     def as_image(self, tile_length=8):
         if tile_length not in self.cached_tiles.keys():
             width = height = tile_length
@@ -86,3 +120,11 @@ class Tile:
     def _mirror(self):
         for byte in range(len(self.data)):
             self.data[byte] = bit_reverse[self.data[byte]]
+
+    def draw(self, painter: QPainter, x, y, length):
+        tile_hash = (self.tile_hash, length)
+
+        if tile_hash not in Tile._tile_cache:
+            Tile._tile_cache[tile_hash] = self.as_image(length)
+
+        painter.drawImage(x, y, Tile._tile_cache[tile_hash])
