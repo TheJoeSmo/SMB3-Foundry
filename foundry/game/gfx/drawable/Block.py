@@ -1,5 +1,11 @@
+
+
+from typing import Union
 from PySide2.QtCore import QPoint
 from PySide2.QtGui import QColor, QImage, QPainter, Qt
+
+from foundry.core.PaletteSet.PaletteSet import PaletteSet
+from foundry.core.PatternTable.PatternTableHandler import PatternTableHandler
 
 from foundry.game.File import ROM
 from foundry.game.gfx.GraphicsSet import GraphicsSet
@@ -36,7 +42,12 @@ class Block:
     _block_cache = {}
 
     def __init__(
-        self, block_index: int, palette_group: PaletteGroup, graphics_set: GraphicsSet, tsa_data: bytes, mirrored=False,
+            self,
+            block_index: int,
+            palette_group: Union[PaletteGroup, PaletteSet],
+            graphics_set: Union[GraphicsSet, PatternTableHandler],
+            tsa_data: bytes, 
+            mirrored=False,
     ):
         self.index = block_index
 
