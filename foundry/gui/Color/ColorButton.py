@@ -1,5 +1,5 @@
 from typing import Optional
-from PySide2.QtWidgets import QToolButton, QWidget
+from PySide2.QtWidgets import QWidget
 from PySide2.QtCore import QSize
 
 from foundry.core.Observables.GenericObservable import GenericObservable
@@ -7,15 +7,12 @@ from foundry.core.Color.Color import Color
 from foundry.core.Color.ObservableColor import ObservableColor
 
 
-class ColorButton(QToolButton):
+class ColorButton(QWidget):
     """A generic tool button with extended functionality"""
     def __init__(self, parent: Optional[QWidget], color: Color):
         super().__init__(parent)
         self._color = ObservableColor(color.red, color.green, color.blue)
 
-        self.clicked_action = GenericObservable("clicked")
-        self.pressed_action = GenericObservable("pressed")
-        self.released_action = GenericObservable("released")
         self.update_action = GenericObservable("update")
 
         # Update the background and send updates upstream
