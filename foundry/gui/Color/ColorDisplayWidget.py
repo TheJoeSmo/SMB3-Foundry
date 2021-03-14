@@ -7,7 +7,7 @@ from foundry.core.Color.Color import Color
 from foundry.core.Color.ObservableColor import ObservableColor
 
 
-class ColorButton(QWidget):
+class ColorDisplayWidget(QWidget):
     """A generic tool button with extended functionality"""
     def __init__(self, parent: Optional[QWidget], color: Color):
         super().__init__(parent)
