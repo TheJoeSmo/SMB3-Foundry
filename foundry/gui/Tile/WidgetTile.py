@@ -52,7 +52,7 @@ class WidgetTile(QWidget):
     @size.setter
     def size(self, size: Size) -> None:
         self.tile.size = size
-        self.size_update_action(self._size)
+        self.size_update_action(self.size)
 
     @property
     def pattern_table(self) -> PatternTableHandler:
