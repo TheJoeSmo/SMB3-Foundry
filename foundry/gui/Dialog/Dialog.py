@@ -1,12 +1,13 @@
 
 
+from typing import Optional
 from PySide2.QtGui import Qt, QKeyEvent
 from PySide2.QtWidgets import QDialog, QSizePolicy
 
 
 class Dialog(QDialog):
     """This class makes the default Dialog window"""
-    def __init__(self, parent, title: str = None):
+    def __init__(self, parent, title: Optional[str] = None):
         super().__init__(self, parent)
         if title is not None:
             self.setWindowTitle(title)
