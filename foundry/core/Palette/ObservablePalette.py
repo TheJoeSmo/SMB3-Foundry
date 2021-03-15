@@ -26,7 +26,7 @@ class ObservablePalette(Palette):
             ObservableColor.from_color(color_2),
             ObservableColor.from_color(color_3)
         )
-        self.update_action = GenericObservable("palette_update")
+        self.update_observable = GenericObservable("palette_update")
 
     def __str__(self) -> str:
         return self._palette.__str__()
@@ -94,4 +94,4 @@ class ObservablePalette(Palette):
     @palette.setter
     def palette(self, palette: Palette) -> None:
         self._palette = palette
-        self.update_action(palette)
+        self.update_observable(palette)
