@@ -6,7 +6,6 @@ from PySide2.QtWidgets import QWidget
 
 from foundry.core.Palette.Palette import Palette
 
-from foundry.gui.QWidget.TrackingWidget import TrackingWidget
 from foundry.gui.Palette.PaletteDisplayerWidget import PaletteDisplayerWidget
 from foundry.gui.Color.ColorWidget import ColorPickerButton as ColorWidget
 
