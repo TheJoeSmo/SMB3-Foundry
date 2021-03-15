@@ -11,7 +11,7 @@ from foundry.core.Palette.Palette import Palette
 from foundry.gui.Color.ColorDisplayWidget import ColorDisplayWidget as ColorWidget
 
 
-class PaletteEditor(QWidget):
+class PaletteDisplayerEditor(QWidget):
     """A widget to display a single palette"""
     def __init__(self, parent: Optional[QWidget], palette: Palette) -> None:
         super().__init__(parent)
