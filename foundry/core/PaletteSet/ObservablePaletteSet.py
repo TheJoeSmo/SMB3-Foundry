@@ -5,7 +5,7 @@ from typing import Union
 from ..Observables.GenericObservable import GenericObservable
 from ..Palette.Palette import Palette
 from ..Palette.ObservablePalette import ObservablePalette
-from PaletteSet import PaletteSet
+from .PaletteSet import PaletteSet
 
 
 def _get_palette(palette_set: Union[PaletteSet, "ObservablePaletteSet"], index: int) -> ObservablePalette:
