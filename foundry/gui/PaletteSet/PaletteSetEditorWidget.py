@@ -81,6 +81,6 @@ if __name__ == "__main__":
     app = QApplication()
     main_window = QMainWindow()
     main_window.setCentralWidget(PaletteSetEditorWidget(None, pal, True))
-    main_window.showMaximized()
+    main_window.showNormal()
     app.exec_()
 
