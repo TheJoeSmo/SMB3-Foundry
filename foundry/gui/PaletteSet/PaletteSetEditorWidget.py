@@ -39,3 +39,48 @@ class PaletteSetEditorWidget(PaletteSetDisplayerWidget):
         button = PaletteWidget(self, self.palette_set[idx], False)
         button.update_observable.attach_observer(lambda palette, *_: set_palette(palette))
         return button
+
+
+if __name__ == "__main__":
+    # Loads a test widget to see how it works in isolation
+
+    from PySide2.QtWidgets import QApplication, QMainWindow
+
+    from foundry.core.Color.PaletteController import PaletteController
+    from foundry.core.Palette.Palette import Palette
+
+    palette_controller = PaletteController()
+
+    pal = PaletteSet(
+        Palette(
+            palette_controller.colors[0],
+            palette_controller.colors[1],
+            palette_controller.colors[2],
+            palette_controller.colors[3]
+        ),
+        Palette(
+            palette_controller.colors[0],
+            palette_controller.colors[4],
+            palette_controller.colors[5],
+            palette_controller.colors[6]
+        ),
+        Palette(
+            palette_controller.colors[0],
+            palette_controller.colors[7],
+            palette_controller.colors[8],
+            palette_controller.colors[9]
+        ),
+        Palette(
+            palette_controller.colors[0],
+            palette_controller.colors[10],
+            palette_controller.colors[11],
+            palette_controller.colors[12]
+        )
+    )
+
+    app = QApplication()
+    main_window = QMainWindow()
+    main_window.setCentralWidget(PaletteSetEditorWidget(None, pal, True))
+    main_window.showMaximized()
+    app.exec_()
+
