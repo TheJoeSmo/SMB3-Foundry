@@ -3,7 +3,7 @@
 from ..Observables.GenericObservable import GenericObservable
 from ..Color.Color import Color
 from ..Color.ObservableColor import ObservableColor
-from Palette import Palette
+from .Palette import Palette
 
 
 def _get_color(palette: Palette, index: int) -> ObservableColor:
