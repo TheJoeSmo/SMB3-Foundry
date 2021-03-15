@@ -5,7 +5,7 @@ from typing import Optional
 from PySide2.QtGui import Qt
 from PySide2.QtWidgets import QWidget, QGridLayout
 
-from foundry.gui.Color.ColorDisplayWidget import ColorButton
+from foundry.gui.Color.ColorDisplayWidget import ColorDisplayWidget as ColorButton
 
 
 from foundry.core.Observables.GenericObservable import GenericObservable
