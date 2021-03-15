@@ -28,7 +28,7 @@ class ObservablePaletteSet(Palette):
             ObservablePalette.from_palette(palette_2),
             ObservablePalette.from_palette(palette_3)
         )
-        self.update_action = GenericObservable("palette_update")
+        self.update_observable = GenericObservable("palette_update")
 
     def __str__(self) -> str:
         return self._palette.__str__()
@@ -95,4 +95,4 @@ class ObservablePaletteSet(Palette):
     @palette_set.setter
     def palette_set(self, palette_set: PaletteSet) -> None:
         self._palette_set = palette_set
-        self.update_action(palette_set)
+        self.update_observable(palette_set)

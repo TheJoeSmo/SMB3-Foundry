@@ -22,7 +22,7 @@ class PaletteDisplayerWidget(QWidget):
         self._palette = ObservablePalette.from_palette(palette)
 
         self.update_observable = GenericObservable("update")
-        self._palette.update_action.attach_observer(lambda pal: pal)
+        self._palette.update_observable.attach_observer(lambda pal: pal)
 
         hbox = QHBoxLayout()
         hbox.setContentsMargins(0, 0, 0, 0)

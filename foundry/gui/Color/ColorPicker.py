@@ -28,7 +28,7 @@ class ColorPicker(QWidget):
         # Generate the 40 different NES colors and attach a observer that sends the update upstream to them
         for idx in range(0x40):
             button = ColorButton.as_tiny(self, _palette_controller.colors[idx])
-            button.update_action.attach_observer(lambda color, i=idx: self.update_action((i, color)))
+            button.update_observable.attach_observer(lambda color, i=idx: self.update_action((i, color)))
             grid_layout.addWidget(button, row=idx % 0x10, column=idx // 0x10)
 
         self.setLayout(grid_layout)

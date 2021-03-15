@@ -26,7 +26,7 @@ class PaletteSetEditorWidget(PaletteSetDisplayerWidget):
             self.palette_set = palette_set
 
         button = ColorWidget.as_tiny(self, self.palette_set[0][0])
-        button.update_action.attach_observer(lambda color, *_: set_background_color(color))
+        button.update_observable.attach_observer(lambda color, *_: set_background_color(color))
         return button
 
     def _load_palette(self, idx: int) -> QWidget:

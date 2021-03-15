@@ -27,5 +27,5 @@ class PaletteEditorWidget(PaletteDisplayerWidget):
             self.palette = palette
 
         button = ColorWidget.as_tiny(self, self.palette[idx if full else idx + 1])
-        button.update_action.attach_observer(lambda color, *_: set_color(color))
+        button.update_observable.attach_observer(lambda color, *_: set_color(color))
         return button
