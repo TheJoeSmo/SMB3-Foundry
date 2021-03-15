@@ -8,7 +8,7 @@ from PySide2.QtWidgets import QDialog, QSizePolicy
 class Dialog(QDialog):
     """This class makes the default Dialog window"""
     def __init__(self, parent, title: Optional[str] = None):
-        super().__init__(self, parent)
+        super().__init__(parent)
         if title is not None:
             self.setWindowTitle(title)
         self.setWindowFlag(Qt.WindowStaysOnTopHint)
