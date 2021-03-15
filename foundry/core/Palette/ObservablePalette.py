@@ -6,11 +6,11 @@ from ..Color.ObservableColor import ObservableColor
 from .Palette import Palette
 
 
-def _get_color(palette: Palette, index: int) -> ObservableColor:
+def _get_color(palette: "ObservablePalette", index: int) -> Color:
     return palette[index]
 
 
-def _set_color(palette: Palette, index: int, color: Color):
+def _set_color(palette: "ObservablePalette", index: int, color: Color):
     palette[index] = color
 
 
@@ -53,7 +53,7 @@ class ObservablePalette(Palette):
 
     @property
     def color_0(self) -> Color:
-        return _get_color(self, 0).color
+        return _get_color(self, 0)
 
     @color_0.setter
     def color_0(self, color: Color):
@@ -61,7 +61,7 @@ class ObservablePalette(Palette):
 
     @property
     def color_1(self) -> Color:
-        return _get_color(self, 1).color
+        return _get_color(self, 1)
 
     @color_1.setter
     def color_1(self, color: Color):
@@ -69,7 +69,7 @@ class ObservablePalette(Palette):
 
     @property
     def color_2(self) -> Color:
-        return _get_color(self, 2).color
+        return _get_color(self, 2)
 
     @color_2.setter
     def color_2(self, color: Color):
@@ -77,7 +77,7 @@ class ObservablePalette(Palette):
 
     @property
     def color_3(self) -> Color:
-        return _get_color(self, 3).color
+        return _get_color(self, 3)
 
     @color_3.setter
     def color_3(self, color: Color):
