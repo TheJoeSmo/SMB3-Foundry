@@ -10,6 +10,13 @@ from foundry.core.Color.Color import Color
 from foundry.core.Color.ObservableColor import ObservableColor
 
 
+def _update_bg(self, c: Color):
+    pal = self.palette()
+    pal.setColor(self.backgroundRole(), QColor(c.red, c.green, c.blue))
+    self.setPalette(pal)
+    self.update()
+
+
 class ColorDisplayWidget(QWidget):
     """A generic tool button with extended functionality"""
     def __init__(self, parent: Optional[QWidget], color: Color):
@@ -22,13 +29,8 @@ class ColorDisplayWidget(QWidget):
         self.update_observable = GenericObservable("update")
 
         # Update the background and send updates upstream
-        def update_bg(c: Color):
-            pal = self.palette()
-            pal.setColor(self.backgroundRole(), QColor(c.red, c.green, c.blue))
-            self.setPalette(pal)
-
         self._color.update_action.attach_observer(
-            lambda c: update_bg(c)
+            lambda c: _update_bg(self, c)
         )
         self.color = color  # Push the new colors
         self._color.update_action.attach_observer(
