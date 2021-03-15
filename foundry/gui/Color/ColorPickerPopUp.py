@@ -20,7 +20,7 @@ class ColorPickerPopup(Dialog):
 
         self.color_picker.update_action.attach_observer(lambda *_: self.accept())
         if action is not None:
-            self.color_picker.update_action.attach_observer(lambda idx, color: action(idx, color))
+            self.color_picker.update_action.attach_observer(action)
 
         self.setWhatsThis(
             "<b>Color Picker Popup</b>"
