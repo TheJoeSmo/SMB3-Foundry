@@ -2,6 +2,7 @@
 
 from typing import Optional
 from PySide2.QtWidgets import QWidget
+from PySide2.QtGui import QColor
 from PySide2.QtCore import QSize
 
 from foundry.core.Observables.GenericObservable import GenericObservable
@@ -14,14 +15,22 @@ class ColorDisplayWidget(QWidget):
     def __init__(self, parent: Optional[QWidget], color: Color):
         super().__init__(parent)
         # Pass the job of handling the color to the observable color
-        self._color = ObservableColor(color.red, color.green, color.blue)
+        self.setAutoFillBackground(True)
+
+        self._color = ObservableColor(0, 0, 0)
 
         self.update_observable = GenericObservable("update")
 
         # Update the background and send updates upstream
+        def update_bg(c: Color):
+            pal = self.palette()
+            pal.setColor(self.backgroundRole(), QColor(c.red, c.green, c.blue))
+            self.setPalette(pal)
+
         self._color.update_action.attach_observer(
-            lambda c: self.setStyleSheet(f"background-color:rgb({c.red},{c.green},{c.blue}")
+            lambda c: update_bg(c)
         )
+        self.color = color  # Push the new colors
         self._color.update_action.attach_observer(
             lambda c: self.update_observable.notify_observers(c)
         )
