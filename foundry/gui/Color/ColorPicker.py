@@ -5,7 +5,7 @@ from typing import Optional
 from PySide2.QtGui import Qt
 from PySide2.QtWidgets import QWidget, QGridLayout
 
-from foundry.gui.Color.ColorDisplayWidget import ColorDisplayWidget as ColorButton
+from foundry.gui.Color.ColorDisplayTracker import ColorDisplayTracker as ColorButton
 
 
 from foundry.core.Observables.GenericObservable import GenericObservable
@@ -28,7 +28,9 @@ class ColorPicker(QWidget):
         # Generate the 40 different NES colors and attach a observer that sends the update upstream to them
         for idx in range(0x40):
             button = ColorButton.as_tiny(self, _palette_controller.colors[idx])
-            button.update_observable.attach_observer(lambda color, i=idx: self.update_action((i, color)))
+            button.single_click_observable.attach_observer(
+                lambda *_, i=idx: self.update_action(i, _palette_controller.colors[i])
+            )
             grid_layout.addWidget(button, row=idx % 0x10, column=idx // 0x10)
 
         self.setLayout(grid_layout)
