@@ -25,7 +25,7 @@ class ColorPickerButton(TrackingWidget, ColorDisplayWidget):
 
         # Whenever the widget is double clicked the widget will bring up a popup to select a color
         self.double_click_observable.attach_observer(
-            lambda *_: ColorPickerPopup(self, action=lambda value: setattr(self, "color_index", value)).exec_()
+            lambda *_: ColorPickerPopup(self, action=lambda _, c: setattr(self, "color", c)).exec_()
         )
 
         self.setWhatsThis(
