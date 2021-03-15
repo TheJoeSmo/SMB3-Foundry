@@ -11,7 +11,7 @@ from foundry.gui.Palette.PaletteDisplayerWidget import PaletteDisplayerWidget
 from foundry.gui.Color.ColorWidget import ColorPickerButton as ColorWidget
 
 
-class PaletteEditorWidget(TrackingWidget, PaletteDisplayerWidget):
+class PaletteEditorWidget(PaletteDisplayerWidget):
     """A widget to display a single palette"""
 
     whats_this_text = "<b>Palette Editor</b><br>A widget to edit a palette<br/>"
