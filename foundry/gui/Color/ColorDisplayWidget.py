@@ -16,14 +16,14 @@ class ColorDisplayWidget(QWidget):
         # Pass the job of handling the color to the observable color
         self._color = ObservableColor(color.red, color.green, color.blue)
 
-        self.update_action = GenericObservable("update")
+        self.update_observable = GenericObservable("update")
 
         # Update the background and send updates upstream
         self._color.update_action.attach_observer(
             lambda c: self.setStyleSheet(f"background-color:rgb({c.red},{c.green},{c.blue}")
         )
         self._color.update_action.attach_observer(
-            lambda c: self.update_action.notify_observers(c)
+            lambda c: self.update_observable.notify_observers(c)
         )
 
     def __repr__(self) -> str:
