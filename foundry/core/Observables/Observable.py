@@ -29,12 +29,12 @@ class Observable(AbstractObservable):
 
     def notify_observers(self, *args, **kwargs) -> None:
         """Update all the observers"""
-        self._notify_observers(*args, **kwargs)
+        self._notify_observers(self, *args, **kwargs)
 
     def attach_observer(self, observer: Callable, identifier: Optional[Hashable] = None) -> None:
         """Attach an observer"""
-        self._attach_observers(observer, identifier)
+        self._attach_observers(self, observer, identifier)
 
     def delete_observable(self, identifier: Hashable) -> None:
         """Removes an observer"""
-        self._delete_observers(identifier)
+        self._delete_observers(self, identifier)
