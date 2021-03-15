@@ -16,7 +16,7 @@ class PaletteEditorWidget(TrackingWidget, PaletteDisplayerWidget):
 
     whats_this_text = "<b>Palette Editor</b><br>A widget to edit a palette<br/>"
 
-    def __init__(self, parent: Optional[QWidget], palette: Palette, full: bool) -> None:
+    def __init__(self, parent: Optional[QWidget], palette: Palette, full: bool = False) -> None:
         super().__init__(parent, palette, full)
 
     def _load_button(self, idx: int, full: bool) -> QWidget:
