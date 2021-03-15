@@ -37,5 +37,5 @@ class PaletteSetEditorWidget(PaletteSetDisplayerWidget):
             self.palette_set = palette_set
 
         button = PaletteWidget(self, self.palette_set[idx], False)
-        button.update_action.attach_observer(lambda palette, *_: set_palette(palette))
+        button.update_observable.attach_observer(lambda palette, *_: set_palette(palette))
         return button
