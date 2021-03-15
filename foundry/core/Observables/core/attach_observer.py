@@ -16,7 +16,8 @@ def attach_observer(observable: AbstractObservable, observer: Callable, identifi
     """
 
     while identifier is None:
-        if temp_id := randint(0, len(observable.observers) * 0x10) not in observable.observers:
+        temp_id = randint(0, len(observable.observers) * 0x10)
+        if temp_id not in observable.observers:
             identifier = temp_id  # The temp_id has a 1/16 of missing, in which it will rerole a random number
 
     observable.observers.update({identifier: observer})
