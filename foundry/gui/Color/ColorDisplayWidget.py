@@ -1,3 +1,5 @@
+
+
 from typing import Optional
 from PySide2.QtWidgets import QWidget
 from PySide2.QtCore import QSize
@@ -11,6 +13,7 @@ class ColorDisplayWidget(QWidget):
     """A generic tool button with extended functionality"""
     def __init__(self, parent: Optional[QWidget], color: Color):
         super().__init__(parent)
+        # Pass the job of handling the color to the observable color
         self._color = ObservableColor(color.red, color.green, color.blue)
 
         self.update_action = GenericObservable("update")
