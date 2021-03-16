@@ -99,7 +99,7 @@ class AbstractBlock:
 
     @property
     @abstractmethod
-    def get_tiles(self) -> Tuple[int, int, int, int]:
+    def tiles(self) -> Tuple[int, int, int, int]:
         """Finds the index of the tiles for the block"""
 
     @property

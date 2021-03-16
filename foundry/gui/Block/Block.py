@@ -28,7 +28,7 @@ class Block(AbstractBlock):
         return cls(size, index, ptn_tbl, pal_set, tsa_data, transparency)
 
     @property
-    def get_tiles(self) -> Tuple[int]:
+    def tiles(self) -> Tuple[int]:
         """Finds the index of the tiles for the block"""
         return tuple(self.tsa_data[self.index + (0x100 * i)] for i in range(4))
 
