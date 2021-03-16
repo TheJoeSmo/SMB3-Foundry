@@ -9,9 +9,9 @@ from foundry.gui.QWidget.TrackingWidget import TrackingWidget
 from foundry.gui.Block.AbstractBlock import AbstractBlock
 
 
-class TrackingTile(TrackingWidget, WidgetBlock):
+class TrackingBlock(TrackingWidget, WidgetBlock):
     """
-    A Tile that tracks the movement and button presses of the mouse
+    A block that tracks the movement and button presses of the mouse
     """
 
     def __init__(self, parent: Optional[QWidget], tile: AbstractBlock) -> None:
