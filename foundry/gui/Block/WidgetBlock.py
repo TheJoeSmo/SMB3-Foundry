@@ -28,11 +28,11 @@ class WidgetBlock(QWidget):
     ) -> None:
         super().__init__(parent)
         self.block = block
-        self._initialize_internal_observers()
 
         self.refresh_observable = GenericObservable("refresh")
         self.tile_update_observable = GenericObservable("tile_update")
         self.size_update_observable = GenericObservable("size_update")
+        self.size_update_action.observer.attach_observer(self.refresh_event_action)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.parent}, {self.block})"
@@ -86,10 +86,6 @@ class WidgetBlock(QWidget):
     def palette_set(self, palette_set: PaletteSet) -> None:
         self.block.palette_set = palette_set
         self.refresh_event_action()
-
-    def _initialize_internal_observers(self) -> None:
-        """Initializes internal observers for special events"""
-        self.size_update_action.observer.attach_observer(self.refresh_event_action)
 
     def sizeHint(self):
         """The ideal size of the widget"""
