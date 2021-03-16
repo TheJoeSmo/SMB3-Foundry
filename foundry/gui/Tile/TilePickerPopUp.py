@@ -32,7 +32,7 @@ class ColorPickerPopup(Dialog):
 
         self.tile_picker.update_action.attach_observer(lambda *_: self.accept())
         if action is not None:
-            self.color_picker.update_action.attach_observer(action)
+            self.color_picker.update_observable.attach_observer(action)
 
         self.setWhatsThis(self.tile_picker.whats_this_text)  # Steal the what this is text
 
