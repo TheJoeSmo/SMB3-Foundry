@@ -7,7 +7,7 @@ from PySide2.QtWidgets import QComboBox, QWidget
 from foundry.core.Observables.GenericObservable import GenericObservable
 
 
-ComboBoxOption = namedtuple("ComboBoxOption", "callable")
+ComboBoxOption = namedtuple("ComboBoxOption", "name callable")
 
 
 class ComboBox(QComboBox):
@@ -26,7 +26,7 @@ class ComboBox(QComboBox):
 
     def add_item(self, option: ComboBoxOption) -> None:
         """Adds an item to the drop down with an action"""
-        self.addItem(option.callable)
+        self.addItem(option.name)
         index = self.items_count
         self.index_changed_action.observer.attach_observer(
             lambda result: option.callable() if result == index else result
