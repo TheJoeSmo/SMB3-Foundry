@@ -14,8 +14,12 @@ from foundry.gui.Tile.WidgetTile import WidgetTile
 from foundry.gui.Tile.Tile import Tile
 
 
-class TileDisplayer(QWidget):
+class PatternTableDisplayer(QWidget):
     """A widget that shows all the tiles of a pattern table"""
+
+    # The text that will be displayed as a tool tip
+    whats_this_text = "<b>Pattern Table Displayer</b><br>Displays all the tiles in a pattern table<br/>"
+
     def __init__(
             self,
             parent: Optional[QWidget],
@@ -39,6 +43,8 @@ class TileDisplayer(QWidget):
             grid_layout.addWidget(tile, row=idx % 0x10, column=idx // 0x10)
 
         self.setLayout(grid_layout)
+
+        self.setWhatsThis()
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.parent}, {self.tile_palette},{self.pattern_table}, {self.tile_size})"
