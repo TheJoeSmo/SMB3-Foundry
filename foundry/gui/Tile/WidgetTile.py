@@ -5,6 +5,8 @@ from PySide2.QtCore import QSize
 from PySide2.QtWidgets import QWidget
 from PySide2.QtGui import QPaintEvent, QPainter
 
+from foundry.core.util.update_types import \
+    SIZE_UPDATE, REFRESH_UPDATE, INDEX_UPDATE, PALETTE_UPDATE, PATTERN_TABLE_UPDATE
 from foundry.core.PatternTable.PatternTableHandler import PatternTableHandler
 from foundry.core.Palette.Palette import Palette
 from foundry.core.Observables.GenericObservable import GenericObservable
@@ -25,11 +27,16 @@ class WidgetTile(QWidget):
     ) -> None:
         super().__init__(parent)
         self.tile = tile
-        self._initialize_internal_observers()
 
-        self.refresh_observable = GenericObservable("refresh")
-        self.tile_update_observable = GenericObservable("tile_update")
-        self.size_update_observable = GenericObservable("size_update")
+        self.update_observable = GenericObservable("update")
+        # Send a refresh update if needed
+        self.update_observable.attach_observer(
+            lambda update_type, *_: self.update_observable.notify_observers(REFRESH_UPDATE) if update_type > 1 else 0
+        )
+        # Redraw if a refresh update occurs
+        self.update_observable.attach_observer(
+            lambda update_type, *_: self.update() if update_type == 1 else 0
+        )
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.parent}, {self.tile})"
@@ -42,7 +49,7 @@ class WidgetTile(QWidget):
     @index.setter
     def index(self, index: int) -> None:
         self.tile.index = index
-        self.refresh_event_action()
+        self.update_observable.notify_observers(INDEX_UPDATE, self.index)
 
     @property
     def size(self) -> Size:
@@ -52,7 +59,7 @@ class WidgetTile(QWidget):
     @size.setter
     def size(self, size: Size) -> None:
         self.tile.size = size
-        self.size_update_action(self.size)
+        self.update_observable.notify_observers(SIZE_UPDATE, self.index)
 
     @property
     def pattern_table(self) -> PatternTableHandler:
@@ -62,7 +69,7 @@ class WidgetTile(QWidget):
     @pattern_table.setter
     def pattern_table(self, pattern_table: PatternTableHandler) -> None:
         self.tile.pattern_table = pattern_table
-        self.refresh_event_action()
+        self.update_observable.notify_observers(PATTERN_TABLE_UPDATE, self.pattern_table)
 
     @property
     def palette(self) -> Palette:
@@ -72,11 +79,7 @@ class WidgetTile(QWidget):
     @palette.setter
     def palette(self, palette: Palette) -> None:
         self.tile.palette = palette
-        self.refresh_event_action()
-
-    def _initialize_internal_observers(self) -> None:
-        """Initializes internal observers for special events"""
-        self.size_update_action.observer.attach_observer(self.refresh_event_action)
+        self.update_observable.notify_observers(PALETTE_UPDATE, self.pattern_table)
 
     def sizeHint(self):
         """The ideal size of the widget"""
