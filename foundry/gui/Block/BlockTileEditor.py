@@ -10,7 +10,7 @@ class BlockTileEditor(BlockTileTracker):
     """A class for selecting tiles for a Block"""
 
     # The text that will be displayed as a tool tip
-    whats_this_text = "<b>Block Tile Tracker</b><br>Tracks a block as four smaller tiles<br/>"
+    whats_this_text = "<b>Block Tile Editor</b><br>Double click a tile to change it<br/>"
 
     def _create_tile(self, idx: int, tile_idx: int) -> QWidget:
         tile = super()._create_tile(idx, tile_idx)
