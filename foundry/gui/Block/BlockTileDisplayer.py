@@ -28,7 +28,7 @@ class BlockTileDisplayer(QWidget):
         grid.setVerticalSpacing(0)
 
         for idx in range(4):
-            grid.addWidget(self._create_tile(self.block.tiles[idx]), idx & 1, idx // 2)
+            grid.addWidget(self._create_tile(idx, self.block.tiles[idx]), idx & 1, idx // 2)
 
         self.setLayout(grid)
 
@@ -37,8 +37,8 @@ class BlockTileDisplayer(QWidget):
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.parent}, {self.block})"
 
-    def _create_tile(self, idx) -> QWidget:
+    def _create_tile(self, idx: int, tile_idx: int) -> QWidget:
         return WidgetTile(
             self,
-            Tile(self.block.size, idx, self.block.pattern_table, self.block.palette_set[idx // 0x40])
+            Tile(self.block.size, tile_idx, self.block.pattern_table, self.block.palette_set[tile_idx // 0x40])
         )
