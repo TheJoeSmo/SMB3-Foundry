@@ -5,6 +5,7 @@ from PySide2.QtWidgets import QWidget
 from foundry.gui.Block.BlockTileTracker import BlockTileTracker
 from foundry.gui.Tile.TilePickerPopUp import TilePickerPopUp
 
+
 class BlockTileEditor(BlockTileTracker):
     """A class for selecting tiles for a Block"""
 
