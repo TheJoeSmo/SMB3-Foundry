@@ -16,11 +16,6 @@ class Palette:
     def __str__(self) -> str:
         return f"({self[0]}),({self[1]}),({self[2]}),({self[3]})"
 
-    @property
-    def nes_str(self) -> str:
-        """Defines the palette as a NES palette string"""
-        return f"{self[0].nes_str},{self[1].nes_str},{self[2].nes_str},{self[3].nes_str}"
-
     def __getitem__(self, item: int) -> Color:
         if item == 0:
             return self.color_0
@@ -44,3 +39,13 @@ class Palette:
             self.color_3 = value
         else:
             raise NotImplementedError
+
+    @classmethod
+    def from_palette(cls, palette: "Palette"):
+        """Generates a Palette from a Palette"""
+        return cls(palette.color_0, palette.color_1, palette.color_2, palette.color_3)
+
+    @property
+    def nes_str(self) -> str:
+        """Defines the palette as a NES palette string"""
+        return f"{self[0].nes_str},{self[1].nes_str},{self[2].nes_str},{self[3].nes_str}"
