@@ -1,37 +1,20 @@
 
 
-from typing import Optional
-
-from ..Observables.GenericObservable import GenericObservable
-from .Color import Color
+from foundry.core.Observables.GenericObservable import GenericObservable
+from foundry.core.Color.Color import Color
 
 
-class ObservableColor:
+class ObservableColor(Color):
     """
     A color that emits an update when edited
     """
 
     def __init__(self, red: int, green: int, blue: int):
         self._color = Color(red, green, blue)
-        self.update_action = GenericObservable("color_update")
 
-    def __str__(self) -> str:
-        return self._color.__str__()
-
-    @classmethod
-    def from_color(cls, color: Color):
-        """Generates a ObservableColor from a color"""
-        return cls(color.red, color.green, color.blue)
-
-    @property
-    def nes_index(self) -> Optional[int]:
-        """Returns the estimated index of the color in terms of the NES palette"""
-        return self._color.nes_index
-
-    @property
-    def nes_str(self) -> str:
-        """Returns the color as a NES string"""
-        return self._color.nes_str
+        self.update_observable = GenericObservable("update")
+        self.color_update_observable = GenericObservable("color_update")
+        self.color_update_observable.attach_observer(lambda *_: self.update_observable.notify_observers())
 
     @property
     def red(self) -> int:
@@ -65,5 +48,4 @@ class ObservableColor:
     @color.setter
     def color(self, color: Color) -> None:
         self._color = color
-        if len(self.update_action.observers):
-            self.update_action.notify_observers(self.color)
+        self.color_update_observable.notify_observers(self.color)
