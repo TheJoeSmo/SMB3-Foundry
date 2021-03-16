@@ -5,7 +5,7 @@ BlockWidget: An abstract representation of what a block is.  Unlike gfx/Block th
 
 
 from abc import abstractmethod
-from typing import Optional
+from typing import Optional, Tuple
 from PySide2.QtGui import QPainter
 
 from foundry.core.PatternTable.PatternTableHandler import PatternTableHandler
@@ -96,6 +96,11 @@ class AbstractBlock:
     @abstractmethod
     def transparency(self, transparency: bool) -> None:
         """"""
+
+    @property
+    @abstractmethod
+    def get_tiles(self) -> Tuple[int, int, int, int]:
+        """Finds the index of the tiles for the block"""
 
     @property
     def block(self) -> Block:

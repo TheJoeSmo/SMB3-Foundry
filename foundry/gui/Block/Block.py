@@ -1,6 +1,6 @@
 
 
-from typing import Optional
+from typing import Optional, Tuple
 
 from foundry.core.PatternTable.PatternTableHandler import PatternTableHandler
 from foundry.core.PaletteSet.PaletteSet import PaletteSet
@@ -26,6 +26,11 @@ class Block(AbstractBlock):
         from foundry.game.File import ROM, TSA_TABLE_SIZE, TSA_TABLE_INTERVAL
         tsa_data = ROM().bulk_read(TSA_TABLE_SIZE, (tsa_offset * TSA_TABLE_INTERVAL) + 0x10)
         return cls(size, index, ptn_tbl, pal_set, tsa_data, transparency)
+
+    @property
+    def get_tiles(self) -> Tuple[int]:
+        """Finds the index of the tiles for the block"""
+        return tuple(self.tsa_data[self.index + (0x100 * i)] for i in range(4))
 
     @property
     def size(self) -> Size:
