@@ -11,7 +11,7 @@ from foundry.gui.Tile.PatternTableTilePicker import PatternTableTilePicker as Ti
 from foundry.gui.Dialog.Dialog import Dialog
 
 
-class ColorPickerPopup(Dialog):
+class TilePickerPopUp(Dialog):
     """Allows you to pick a custom color and returns the value"""
 
     def __init__(
