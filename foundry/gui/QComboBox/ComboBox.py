@@ -28,7 +28,7 @@ class ComboBox(QComboBox):
         """Adds an item to the drop down with an action"""
         self.addItem(option.name)
         index = self.items_count
-        self.index_changed_action.observer.attach_observer(
+        self.update_observable.attach_observer(
             lambda result: option.callable() if result == index else result
         )
         self.items_count += 1
