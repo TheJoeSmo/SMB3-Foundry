@@ -16,5 +16,5 @@ class TileSquareAssemblyPicker(TileSquareAssemblyDisplayer):
             self,
             Block.from_tsa(self.block_size, idx, self.pattern_table, self.palette_set, self.tileset)
         )
-        widget.single_click_observable.attach_observer(lambda *_, i=idx: self.update_action(i))
+        widget.single_click_observable.attach_observer(lambda *_, i=idx: self.update_observable(i))
         return widget
