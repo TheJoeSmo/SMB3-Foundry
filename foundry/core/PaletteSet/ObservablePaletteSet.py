@@ -16,7 +16,7 @@ def _set_palette(palette_set: Union[PaletteSet, "ObservablePaletteSet"], index: 
     palette_set[index] = palette
 
 
-class ObservablePaletteSet(Palette):
+class ObservablePaletteSet(PaletteSet):
     """
     A palette that emits an update when edited
     """
@@ -31,7 +31,7 @@ class ObservablePaletteSet(Palette):
         self.update_observable = GenericObservable("palette_update")
 
     def __str__(self) -> str:
-        return self._palette.__str__()
+        return self._palette_set.__str__()
 
     def __getitem__(self, item: int) -> Palette:
         #  We provide ObservablePalette to the actual palette set, which will be returned
@@ -39,7 +39,7 @@ class ObservablePaletteSet(Palette):
         return self._palette_set[item].palette
 
     def __setitem__(self, key: int, value: Palette):
-        pal = self.palette  # This is a copy of the actual palette being edited
+        pal = self._palette_set  # This is a copy of the actual palette being edited
         pal[key] = ObservablePalette.from_palette(value)
         self.palette_set = pal
 
