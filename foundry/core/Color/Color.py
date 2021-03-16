@@ -1,13 +1,13 @@
-"""
-A RGB representation of a color with NES specific helper functions
-"""
 
-from typing import NamedTuple, Optional
+
+from typing import Optional
+from dataclasses import dataclass
 
 from ..util.hexify import hexify
 
 
-class Color(NamedTuple):
+@dataclass
+class Color:
     """Defines a color with a red, green, and blue value"""
     red: int
     green: int
