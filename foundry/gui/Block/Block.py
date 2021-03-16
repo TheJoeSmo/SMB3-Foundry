@@ -32,6 +32,11 @@ class Block(AbstractBlock):
         """Finds the index of the tiles for the block"""
         return tuple(self.tsa_data[self.index + (0x100 * i)] for i in range(4))
 
+    @tiles.setter
+    def tiles(self, tiles: Tuple[int]) -> None:
+        for i, tile in enumerate(tiles):
+            self.tsa_data[self.index + (0x100 * i)] = tile
+
     @property
     def size(self) -> Size:
         """The size of the block in units of 16 pixels"""

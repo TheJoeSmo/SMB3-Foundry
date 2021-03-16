@@ -102,6 +102,11 @@ class AbstractBlock:
     def tiles(self) -> Tuple[int, int, int, int]:
         """Finds the index of the tiles for the block"""
 
+    @tiles.setter
+    @abstractmethod
+    def tiles(self, tiles: Tuple[int, int, int, int]):
+        """"""
+
     @property
     def block(self) -> Block:
         """The actual block provided"""
