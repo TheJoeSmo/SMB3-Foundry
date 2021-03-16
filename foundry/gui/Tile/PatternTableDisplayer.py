@@ -44,7 +44,7 @@ class PatternTableDisplayer(QWidget):
 
         self.setLayout(grid_layout)
 
-        self.setWhatsThis()
+        self.setWhatsThis(self.whats_this_text)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.parent}, {self.tile_palette},{self.pattern_table}, {self.tile_size})"
