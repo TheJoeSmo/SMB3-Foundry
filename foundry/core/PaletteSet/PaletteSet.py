@@ -42,7 +42,7 @@ class PaletteSet:
 
     @classmethod
     def from_palette_set(cls, palette_set: "PaletteSet"):
-        cls(palette_set.palette_0, palette_set.palette_1, palette_set.palette_2, palette_set.palette_3)
+        return cls(palette_set.palette_0, palette_set.palette_1, palette_set.palette_2, palette_set.palette_3)
 
     @property
     def nes_str(self) -> str:
