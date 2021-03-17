@@ -1,97 +1,56 @@
 
 
-from ..Observables.GenericObservable import GenericObservable
+from foundry.core.Observables.GenericObservable import GenericObservable
+from foundry.core.Observables.SilencerGenericObservable import SilencerGenericObservable
 from ..Color.Color import Color
 from ..Color.ObservableColor import ObservableColor
 from .Palette import Palette
 
 
-def _get_color(palette: "ObservablePalette", index: int) -> Color:
-    return palette[index]
-
-
-def _set_color(palette: "ObservablePalette", index: int, color: Color):
-    palette[index] = color
-
-
 class ObservablePalette(Palette):
-    """
-    A palette that emits an update when edited
-    """
+    """A palette that emits an update when edited"""
 
     def __init__(self, color_0: Color, color_1: Color, color_2: Color, color_3: Color):
+        # This makes it so the colors will automatically update if updates outside the class
         self._palette = Palette(
-            ObservableColor.from_color(color_0),
-            ObservableColor.from_color(color_1),
-            ObservableColor.from_color(color_2),
-            ObservableColor.from_color(color_3)
+            c1 := ObservableColor.from_color(color_0),
+            c2 := ObservableColor.from_color(color_1),
+            c3 := ObservableColor.from_color(color_2),
+            c4 := ObservableColor.from_color(color_3)
         )
-        self.update_observable = GenericObservable("palette_update")
+        self.update_observable = GenericObservable("update")
+        # Notifications will be silenced to avoid multiple calls
+        self.palette_update_observable = SilencerGenericObservable("palette_update")
+        for color in [c1, c2, c3, c4]:
+            # Push the color update forward, note the color will stop the loop
+            color.update_observable.attach_observer(
+                lambda *_: self.palette_update_observable.notify_observers(self.palette)
+            )
+        self.palette_update_observable.notify_observers(lambda *_: self.update_observable.notify_observers())
 
-    def __str__(self) -> str:
-        return self._palette.__str__()
-
-    def __getitem__(self, item: int) -> Color:
-        #  We provide ObservableColors to the actual palette, which will be returned
-        #  This provides an entire copy, to protect the palette from any external changes
-        return self._palette[item].color
-
-    def __setitem__(self, key: int, value: Color):
-        pal = self.palette  # This is a copy of the actual palette being edited
-        pal[key] = ObservableColor.from_color(value)
-        self.palette = pal
-
-    @classmethod
-    def from_palette(cls, palette: Palette):
-        """Generates a ObservableColor from a color"""
-        return cls(palette.color_0, palette.color_1, palette.color_2, palette.color_3)
-
-    @property
-    def nes_str(self) -> str:
-        """Returns the color as a NES string"""
-        return self._palette.nes_str
-
-    @property
-    def color_0(self) -> Color:
-        return _get_color(self, 0)
-
-    @color_0.setter
-    def color_0(self, color: Color):
-        _set_color(self, 0, color)
-
-    @property
-    def color_1(self) -> Color:
-        return _get_color(self, 1)
-
-    @color_1.setter
-    def color_1(self, color: Color):
-        _set_color(self, 1, color)
-
-    @property
-    def color_2(self) -> Color:
-        return _get_color(self, 2)
-
-    @color_2.setter
-    def color_2(self, color: Color):
-        _set_color(self, 2, color)
-
-    @property
-    def color_3(self) -> Color:
-        return _get_color(self, 3)
-
-    @color_3.setter
-    def color_3(self, color: Color):
-        _set_color(self, 3, color)
+    def __setitem__(self, key: int, color: Color):
+        # Note, if you update the palette by setting it in a list, you will cause more updates
+        # It is better to send a new palette, so only one update occurs
+        palette = self.palette
+        palette[key] = color
+        self.palette = palette
 
     @property
     def palette(self) -> Palette:
-        """
-        This provides a full copy of the palette.  Even the colors will not refer to the actual palette.
-        :return:
-        """
+        """Provide a copy of the palette"""
         return Palette(self._palette[0], self._palette[1], self._palette[2], self._palette[3])
 
     @palette.setter
     def palette(self, palette: Palette) -> None:
-        self._palette = palette
-        self.update_observable(palette)
+        # Only provide an update if something changes
+        if palette != self.palette:
+            # We do not want multiple updates, so we will pause it while we set each color
+            self.palette_update_observable.silenced = True
+
+            # We want to preserve the observable colors inside the palette, so we will manually transfer it
+            for i, color in enumerate(palette):
+                self._palette[i].color = color  # Push the new color into the observable color
+
+            # Send the update manually because we silenced it
+            self.palette_update_observable.silenced = False
+            self.palette_update_observable.notify_observers(palette)
