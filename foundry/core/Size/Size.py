@@ -10,3 +10,7 @@ class Size:
     """
     width: int
     height: int
+
+    @classmethod
+    def from_size(cls, size: "Size"):
+        cls(size.width, size.height)
