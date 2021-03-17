@@ -47,5 +47,7 @@ class ObservableColor(Color):
 
     @color.setter
     def color(self, color: Color) -> None:
-        self._color = color
-        self.color_update_observable.notify_observers(self.color)
+        # Only update if needed
+        if self._color != color:
+            self._color = color
+            self.color_update_observable.notify_observers(self.color)
