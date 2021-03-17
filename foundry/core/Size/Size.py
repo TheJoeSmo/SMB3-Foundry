@@ -13,4 +13,4 @@ class Size:
 
     @classmethod
     def from_size(cls, size: "Size"):
-        cls(size.width, size.height)
+        return cls(size.width, size.height)
