@@ -1,89 +1,40 @@
 
 
-from typing import Union
-
-from ..Observables.GenericObservable import GenericObservable
-from ..Palette.Palette import Palette
-from ..Palette.ObservablePalette import ObservablePalette
-from .PaletteSet import PaletteSet
-
-
-def _get_palette(palette_set: Union[PaletteSet, "ObservablePaletteSet"], index: int) -> ObservablePalette:
-    return palette_set[index]
-
-
-def _set_palette(palette_set: Union[PaletteSet, "ObservablePaletteSet"], index: int, palette: Palette):
-    palette_set[index] = palette
+from foundry.core.Observables.GenericObservable import GenericObservable
+from foundry.core.Observables.SilencerGenericObservable import SilencerGenericObservable
+from foundry.core.Palette.ObservablePalette import ObservablePalette
+from foundry.core.PaletteSet.PaletteSet import PaletteSet
+from foundry.core.Palette.Palette import Palette
 
 
 class ObservablePaletteSet(PaletteSet):
-    """
-    A palette that emits an update when edited
-    """
+    """A palette set that emits an update when edited"""
 
     def __init__(self, palette_0: Palette, palette_1: Palette, palette_2: Palette, palette_3: Palette):
+        # This makes it so the palettes will automatically update if it updates outside the class
         self._palette_set = PaletteSet(
-            ObservablePalette.from_palette(palette_0),
-            ObservablePalette.from_palette(palette_1),
-            ObservablePalette.from_palette(palette_2),
-            ObservablePalette.from_palette(palette_3)
+            p1 := ObservablePalette.from_palette(palette_0),
+            p2 := ObservablePalette.from_palette(palette_1),
+            p3 := ObservablePalette.from_palette(palette_2),
+            p4 := ObservablePalette.from_palette(palette_3)
         )
-        self.update_observable = GenericObservable("palette_update")
 
-    def __str__(self) -> str:
-        return self._palette_set.__str__()
+        self.update_observable = GenericObservable("update")
+        # Notifications will be silenced to avoid multiple calls
+        self.palette_set_update_observable = SilencerGenericObservable("palette_update")
+        for palette in [p1, p2, p3, p4]:
+            # Push the color update forward, note the color will stop the loop
+            palette.update_observable.attach_observer(
+                lambda *_: self.palette_set_update_observable.notify_observers(self.palette_set)
+            )
+        self.palette_set_update_observable.notify_observers(lambda *_: self.update_observable.notify_observers())
 
-    def __getitem__(self, item: int) -> Palette:
-        #  We provide ObservablePalette to the actual palette set, which will be returned
-        #  This provides an entire copy, to protect the palette set from any external changes
-        return self._palette_set[item].palette
-
-    def __setitem__(self, key: int, value: Palette):
-        pal = self._palette_set  # This is a copy of the actual palette being edited
-        pal[key] = ObservablePalette.from_palette(value)
-        self.palette_set = pal
-
-    @classmethod
-    def from_palette(cls, palette_set: PaletteSet):
-        """Generates a ObservableColor from a color"""
-        return cls(palette_set.palette_0, palette_set.palette_1, palette_set.palette_2, palette_set.palette_3)
-
-    @property
-    def nes_str(self) -> str:
-        """Returns the color as a NES string"""
-        return self._palette_set.nes_str
-
-    @property
-    def palette_0(self) -> Palette:
-        return _get_palette(self, 0).palette
-
-    @palette_0.setter
-    def palette_0(self, palette: Palette):
-        _set_palette(self, 0, palette)
-
-    @property
-    def palette_1(self) -> Palette:
-        return _get_palette(self, 1).palette
-
-    @palette_1.setter
-    def palette_1(self, palette: Palette):
-        _set_palette(self, 1, palette)
-
-    @property
-    def palette_2(self) -> Palette:
-        return _get_palette(self, 2).palette
-
-    @palette_2.setter
-    def palette_2(self, palette: Palette):
-        _set_palette(self, 2, palette)
-
-    @property
-    def palette_3(self) -> Palette:
-        return _get_palette(self, 3).palette
-
-    @palette_3.setter
-    def palette_3(self, palette: Palette):
-        _set_palette(self, 3, palette)
+    def __setitem__(self, key: int, palette: Palette):
+        # Note, if you update the palette set by setting it in a list, you will cause more updates
+        # It is better to send a new palette set, so only one update occurs
+        palette_set = self.palette_set
+        palette_set[key] = palette
+        self.palette_set = palette_set
 
     @property
     def palette_set(self) -> PaletteSet:
@@ -96,3 +47,16 @@ class ObservablePaletteSet(PaletteSet):
     def palette_set(self, palette_set: PaletteSet) -> None:
         self._palette_set = palette_set
         self.update_observable(palette_set)
+
+        # Only provide an update if something changes
+        if palette_set != self.palette_set:
+            # We do not want multiple updates, so we will pause it while we set each palette
+            self.palette_set_update_observable.silenced = True
+
+            # We want to preserve the observable colors inside the palette set, so we will manually transfer it
+            for i, palette in enumerate(palette_set):
+                self._palette_set[i].palette = palette  # Push the new palette into the observable palette
+
+            # Send the update manually because we silenced it
+            self.palette_set_update_observable.silenced = False
+            self.palette_set_update_observable.notify_observers(palette_set)
