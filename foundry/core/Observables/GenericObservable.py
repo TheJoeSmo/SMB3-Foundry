@@ -13,4 +13,5 @@ class GenericObservable(Observable):
     An observable with generic concrete methods already instantiated, only requiring a name
     """
 
-    __init__ = partialmethod(Observable.__init__, notify_observers, attach_observer, delete_observer)
+    def __init__(self, name: str):
+        super().__init__(notify_observers, attach_observer, delete_observer, name)
