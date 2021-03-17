@@ -2,9 +2,9 @@
 
 from foundry.core.Observables.GenericObservable import GenericObservable
 from foundry.core.Observables.SilencerGenericObservable import SilencerGenericObservable
-from ..Color.Color import Color
-from ..Color.ObservableColor import ObservableColor
-from .Palette import Palette
+from foundry.core.Color.Color import Color
+from foundry.core.Color.ObservableColor import ObservableColor
+from foundry.core.Palette.Palette import Palette
 
 
 class ObservablePalette(Palette):
