@@ -1,6 +1,6 @@
 
 
-from typing import Optional
+from typing import Union, Optional, Tuple
 from dataclasses import dataclass
 
 from ..util.hexify import hexify
@@ -17,8 +17,11 @@ class Color:
         return f"{self.red}, {self.green}, {self.blue}"
 
     @classmethod
-    def from_color(cls, color: "Color"):
-        return cls(color.red, color.green, color.blue)
+    def from_color(cls, color: Union["Color", Tuple[int, int, int]]):
+        try:
+            return cls(color.red, color.green, color.blue)
+        except AttributeError:
+            return cls(color[0], color[1], color[2])
 
     @property
     def nes_index(self) -> Optional[int]:
