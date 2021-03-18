@@ -7,6 +7,7 @@ from PySide2.QtWidgets import QWidget
 
 from foundry import data_dir
 
+from foundry.core.PatternTable.PatternTable import PatternTable
 from foundry.core.PatternTable.PatternTableHandler import PatternTableHandler
 
 from foundry.gui.QComboBox.ComboBox import ComboBox, ComboBoxOption
@@ -18,13 +19,14 @@ with open(data_dir.joinpath("tileset_info.yaml")) as f:
 class TilesetPatternTableWidget(ComboBox):
     """Provides a dropdown to select a tileset for a pattern table"""
     def __init__(self, parent: Optional[QWidget], tileset: int = 0):
+        self.pattern_table = PatternTableHandler(PatternTable.from_tileset(tileset))
         super().__init__(
             parent, [ComboBoxOption(_tileset_info[i]["name"], self.update_pattern_table(i)) for i in _tileset_info]
         )
         self.setCurrentIndex(tileset)
 
     def update_pattern_table(self, tileset: int):
-        self.pattern_table = PatternTableHandler.from_tileset(tileset)
+        self.pattern_table.pattern_table = PatternTable.from_tileset(tileset)
 
 
 if __name__ == "__main__":
