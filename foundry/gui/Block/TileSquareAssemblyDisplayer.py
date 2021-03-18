@@ -6,6 +6,7 @@ from PySide2.QtGui import Qt
 from PySide2.QtWidgets import QWidget, QGridLayout
 
 from foundry.core.Observables.GenericObservable import GenericObservable
+from foundry.core.PatternTable.PatternTable import PatternTable
 from foundry.core.PatternTable.PatternTableHandler import PatternTableHandler
 from foundry.core.PaletteSet.PaletteSet import PaletteSet
 from foundry.core.Size.Size import Size
@@ -62,4 +63,4 @@ class TileSquareAssemblyDisplayer(QWidget):
     @tileset.setter
     def tileset(self, tileset: int) -> None:
         self._tileset = tileset
-        self.pattern_table = PatternTableHandler.from_tileset(tileset)
+        self.pattern_table = PatternTableHandler(PatternTable.from_tileset(tileset))
