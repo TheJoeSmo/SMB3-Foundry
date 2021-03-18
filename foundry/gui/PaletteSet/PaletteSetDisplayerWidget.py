@@ -20,7 +20,7 @@ class PaletteSetDisplayerWidget(QWidget):
 
     def __init__(self, parent: Optional[QWidget], palette_set: PaletteSet, show_background_color=False) -> None:
         super().__init__(parent)
-        self._palette_set = ObservablePaletteSet.from_palette(palette_set)
+        self._palette_set = ObservablePaletteSet.from_palette_set(palette_set)
 
         self.update_observable = GenericObservable("update")
         self._palette_set.update_observable.attach_observer(lambda pal: pal)
