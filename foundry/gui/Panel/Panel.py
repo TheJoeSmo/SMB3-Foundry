@@ -11,7 +11,7 @@ class Panel(QWidget):
     def __init__(self, parent: Optional[QWidget], name: str, widget: QWidget):
         super().__init__(parent)
 
-        self.setSizePolicy(QSizePolicy.Preferred)
+        self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         self.setContentsMargins(0, 0, 0, 0)
 
         layout = QFormLayout()
