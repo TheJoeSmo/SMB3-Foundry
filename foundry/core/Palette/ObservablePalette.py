@@ -35,6 +35,25 @@ class ObservablePalette(Palette):
         palette[key] = color
         self.palette = palette
 
+    @staticmethod
+    def _color_getter(color_index):
+        """A wrapper to make properties for color_0-3"""
+        def color_getter(self):
+            return self[color_index]
+        return color_getter
+
+    @staticmethod
+    def _color_setter(color_index):
+        """A wrapper to make properties for color_0-3"""
+        def color_setter(self, color):
+            self[color_index] = color
+        return color_setter
+
+    color_0 = property(fget=_color_getter(0), fset=_color_setter(0))
+    color_1 = property(fget=_color_getter(1), fset=_color_setter(1))
+    color_2 = property(fget=_color_getter(2), fset=_color_setter(2))
+    color_3 = property(fget=_color_getter(3), fset=_color_setter(3))
+
     @property
     def palette(self) -> Palette:
         """Provide a copy of the palette"""
