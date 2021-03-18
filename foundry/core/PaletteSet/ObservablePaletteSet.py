@@ -5,6 +5,21 @@ from foundry.core.PaletteSet.PaletteSet import PaletteSet
 from foundry.core.Palette.Palette import Palette
 
 
+def _palette_getter(palette_index):
+    """A wrapper to make properties for palette_0-3"""
+    def palette_getter(self):
+        # Get the internal palette_set's palette
+        return self.palette_set[palette_index]
+    return palette_getter
+
+
+def _palette_setter(palette_index):
+    """A wrapper to make properties for palette_0-3"""
+    def palette_setter(self, palette):
+        self[palette_index] = palette
+    return palette_setter
+
+
 class ObservablePaletteSet(PaletteSet):
     """A palette set that emits an update when edited"""
 
@@ -33,20 +48,6 @@ class ObservablePaletteSet(PaletteSet):
         palette_set = self.palette_set
         palette_set[key] = palette
         self.palette_set = palette_set
-
-    @staticmethod
-    def _palette_getter(palette_index):
-        """A wrapper to make properties for palette_0-3"""
-        def palette_getter(self):
-            return self[palette_index]
-        return palette_getter
-
-    @staticmethod
-    def _palette_setter(palette_index):
-        """A wrapper to make properties for palette_0-3"""
-        def palette_setter(self, palette):
-            self[palette_index] = palette
-        return palette_setter
 
     palette_0 = property(fget=_palette_getter(0), fset=_palette_setter(0))
     palette_1 = property(fget=_palette_getter(1), fset=_palette_setter(1))
