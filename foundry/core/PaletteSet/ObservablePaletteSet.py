@@ -1,5 +1,3 @@
-
-
 from foundry.core.Observables.GenericObservable import GenericObservable
 from foundry.core.Observables.SilencerGenericObservable import SilencerGenericObservable
 from foundry.core.Palette.ObservablePalette import ObservablePalette
@@ -35,6 +33,25 @@ class ObservablePaletteSet(PaletteSet):
         palette_set = self.palette_set
         palette_set[key] = palette
         self.palette_set = palette_set
+
+    @staticmethod
+    def _palette_getter(palette_index):
+        """A wrapper to make properties for palette_0-3"""
+        def palette_getter(self):
+            return self[palette_index]
+        return palette_getter
+
+    @staticmethod
+    def _palette_setter(palette_index):
+        """A wrapper to make properties for palette_0-3"""
+        def palette_setter(self, palette):
+            self[palette_index] = palette
+        return palette_setter
+
+    palette_0 = property(fget=_palette_getter(0), fset=_palette_setter(0))
+    palette_1 = property(fget=_palette_getter(1), fset=_palette_setter(1))
+    palette_2 = property(fget=_palette_getter(2), fset=_palette_setter(2))
+    palette_3 = property(fget=_palette_getter(3), fset=_palette_setter(3))
 
     @property
     def palette_set(self) -> PaletteSet:
