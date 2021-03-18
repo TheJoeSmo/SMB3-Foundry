@@ -29,11 +29,11 @@ class ColorDisplayWidget(QWidget):
         self.update_observable = GenericObservable("update")
 
         # Update the background and send updates upstream
-        self._color.update_observable.attach_observer(
+        self._color.color_update_observable.attach_observer(
             lambda c: _update_bg(self, c)
         )
         self.color = color  # Push the new colors
-        self._color.update_observable.attach_observer(
+        self._color.color_update_observable.attach_observer(
             lambda c: self.update_observable.notify_observers(c)
         )
 
