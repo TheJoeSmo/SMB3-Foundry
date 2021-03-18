@@ -1,5 +1,7 @@
 
 
+from typing import Union, Tuple
+
 from foundry.core.Observables.GenericObservable import GenericObservable
 from foundry.core.Color.Color import Color
 
@@ -46,8 +48,12 @@ class ObservableColor(Color):
         return Color(self.red, self.green, self.blue)  # Promote not mutating the value directly
 
     @color.setter
-    def color(self, color: Color) -> None:
+    def color(self, color: Union[Color, Tuple[int, int, int]]) -> None:
         # Only update if needed
         if self._color != color:
-            self._color = color
+            # Convert to a color if we we gave it a tuple instead of a color
+            if isinstance(color, tuple):
+                self._color = Color(color[0], color[1], color[2])
+            else:
+                self._color = Color(color.red, color.green, color.blue)
             self.color_update_observable.notify_observers(self.color)
