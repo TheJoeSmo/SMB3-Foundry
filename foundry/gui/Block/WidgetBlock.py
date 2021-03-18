@@ -1,6 +1,5 @@
 
 
-from abc import abstractmethod
 from typing import Optional
 from PySide2.QtCore import QSize
 from PySide2.QtWidgets import QWidget
@@ -12,8 +11,7 @@ from foundry.core.PaletteSet.PaletteSet import PaletteSet
 from foundry.core.Position.Position import Position
 from foundry.core.Size.Size import Size
 
-from foundry.game.gfx.drawable.Block import Block
-
+from foundry.gui.Block.ObservableBlock import ObservableBlock
 from foundry.gui.Block.AbstractBlock import AbstractBlock
 
 
@@ -27,12 +25,11 @@ class WidgetBlock(QWidget):
             **kwargs
     ) -> None:
         super().__init__(parent)
-        self.block = block
+        self.block = ObservableBlock.from_block(block)
 
-        self.refresh_observable = GenericObservable("refresh")
-        self.tile_update_observable = GenericObservable("tile_update")
-        self.size_update_observable = GenericObservable("size_update")
-        self.size_update_action.observer.attach_observer(self.refresh_event_action)
+        self.update_observable = GenericObservable("update")
+        self.update_observable.attach_observer(lambda *_: self.update())
+        self.block.update_observable.attach_observer(lambda *_: self.update_observable.notify_observers())
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.parent}, {self.block})"
@@ -45,7 +42,6 @@ class WidgetBlock(QWidget):
     @size.setter
     def size(self, size: Size) -> None:
         self.block.size = size
-        self.size_update_action(self.size)
 
     @property
     def index(self) -> int:
@@ -55,7 +51,6 @@ class WidgetBlock(QWidget):
     @index.setter
     def index(self, index: int) -> None:
         self.block.index = index
-        self.refresh_event_action()
 
     @property
     def tsa_data(self) -> bytearray:
@@ -65,7 +60,6 @@ class WidgetBlock(QWidget):
     @tsa_data.setter
     def tsa_data(self, tsa_data: bytearray) -> None:
         self.block.tsa_data = tsa_data
-        self.refresh_event_action()
 
     @property
     def pattern_table(self) -> PatternTableHandler:
@@ -75,7 +69,6 @@ class WidgetBlock(QWidget):
     @pattern_table.setter
     def pattern_table(self, pattern_table: PatternTableHandler) -> None:
         self.block.pattern_table = pattern_table
-        self.refresh_event_action()
 
     @property
     def palette_set(self) -> PaletteSet:
@@ -85,7 +78,6 @@ class WidgetBlock(QWidget):
     @palette_set.setter
     def palette_set(self, palette_set: PaletteSet) -> None:
         self.block.palette_set = palette_set
-        self.refresh_event_action()
 
     def sizeHint(self):
         """The ideal size of the widget"""
