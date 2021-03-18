@@ -38,6 +38,10 @@ class AbstractBlock:
         return f"{self.__class__.__name__}({self.size}, {self.index}, {self.pattern_table}, " \
                f"{self.palette_set}, {self.tsa_data}, {self.transparency})"
 
+    @classmethod
+    def from_block(cls, block: "AbstractBlock"):
+        cls(block.size, block.index, block.pattern_table, block.palette_set, block.tsa_data, block.transparency)
+
     @property
     @abstractmethod
     def size(self) -> Size:
