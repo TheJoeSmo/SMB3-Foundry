@@ -9,7 +9,8 @@ class Label(QLabel):
 
     @classmethod
     def as_regular(cls, parent: Optional[QWidget], text: str):
-        label = QLabel(parent, text)
-        label.setSizePolicy(QSizePolicy.Preferred)
+        label = QLabel(parent)
+        label.setText(text)
+        label.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         label.setContentsMargins(0, 0, 0, 0)
         return label
