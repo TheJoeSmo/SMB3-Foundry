@@ -29,7 +29,7 @@ class ComboBox(QComboBox):
         self.addItem(option.name)
         index = self.items_count
         self.update_observable.attach_observer(
-            lambda result: option.callable() if result == index else result
+            lambda result: option.callable if result == index else result
         )
         self.items_count += 1
 
