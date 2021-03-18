@@ -17,13 +17,13 @@ _NES_PAL_CONTROLLER = None
 def _load_nes_colors():
     with open(palette_file) as f:
         d = yaml.load(f, Loader=CLoader)
-    return {idx: Color(c["red"], c["green"], c["blue"]) for idx, c in enumerate(d)}
+    return {idx: (c["red"], c["green"], c["blue"]) for idx, c in enumerate(d)}
 
 
 def _load_nes_colors_inverse():
     with open(palette_file) as f:
         d = yaml.load(f, Loader=CLoader)
-    return {Color(c["red"], c["green"], c["blue"]): idx for idx, c in enumerate(d)}
+    return {(c["red"], c["green"], c["blue"]): idx for idx, c in enumerate(d)}
 
 
 class PaletteController:
