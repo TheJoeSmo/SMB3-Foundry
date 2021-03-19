@@ -29,9 +29,9 @@ class TileSquareAssemblyDisplayer(QWidget):
             size: Optional[Size] = None
     ) -> None:
         super().__init__(parent)
-        self.tile_palette = palette_set
+        self.palette_set = palette_set
         self.tileset = tileset
-        self.tile_size = size if size is not None else Size(1, 1)
+        self.block_size = size if size is not None else Size(1, 1)
 
         self.update_observable = GenericObservable("update")
 
@@ -48,7 +48,7 @@ class TileSquareAssemblyDisplayer(QWidget):
         self.setWhatsThis(self.whats_this_text)
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self.parent}, {self.tile_palette},{self.tileset}, {self.tile_size})"
+        return f"{self.__class__.__name__}({self.parent}, {self.palette_set},{self.tileset}, {self.block_size})"
 
     def _load_block(self, idx: int) -> QWidget:
         return WidgetBlock(
