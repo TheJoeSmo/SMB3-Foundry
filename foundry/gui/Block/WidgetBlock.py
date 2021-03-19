@@ -25,66 +25,70 @@ class WidgetBlock(QWidget):
             **kwargs
     ) -> None:
         super().__init__(parent)
-        self.block = ObservableBlock.from_block(block)
+        self.observable_block = ObservableBlock.from_block(block)
 
         self.update_observable = GenericObservable("update")
         self.update_observable.attach_observer(lambda *_: self.update())
-        self.block.update_observable.attach_observer(lambda *_: self.update_observable.notify_observers())
+        self.observable_block.update_observable.attach_observer(lambda *_: self.update_observable.notify_observers())
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self.parent}, {self.block})"
+        return f"{self.__class__.__name__}({self.parent}, {self.observable_block})"
 
     @property
     def size(self) -> Size:
         """The size of the block in units of 16 pixels"""
-        return self.block.size
+        return self.observable_block.size
 
     @size.setter
     def size(self, size: Size) -> None:
-        self.block.size = size
+        self.observable_block.size = size
 
     @property
     def index(self) -> int:
         """The index of the block"""
-        return self.block.index
+        return self.observable_block.index
 
     @index.setter
     def index(self, index: int) -> None:
-        self.block.index = index
+        self.observable_block.index = index
 
     @property
     def tsa_data(self) -> bytearray:
         """Find the tsa data from a given offset"""
-        return self.block.tsa_data
+        return self.observable_block.tsa_data
 
     @tsa_data.setter
     def tsa_data(self, tsa_data: bytearray) -> None:
-        self.block.tsa_data = tsa_data
+        self.observable_block.tsa_data = tsa_data
 
     @property
     def pattern_table(self) -> PatternTableHandler:
         """The pattern table for the tiles"""
-        return self.block.pattern_table
+        return self.observable_block.pattern_table
 
     @pattern_table.setter
     def pattern_table(self, pattern_table: PatternTableHandler) -> None:
-        self.block.pattern_table = pattern_table
+        self.observable_block.pattern_table = pattern_table
 
     @property
     def palette_set(self) -> PaletteSet:
         """The palette currently used by the tsa"""
-        return self.block.palette_set
+        return self.observable_block.palette_set
 
     @palette_set.setter
     def palette_set(self, palette_set: PaletteSet) -> None:
-        self.block.palette_set = palette_set
+        self.observable_block.palette_set = palette_set
 
     def sizeHint(self):
         """The ideal size of the widget"""
         return QSize(16 * self.size.width, 16 * self.size.height)
 
+    def draw(self, *args, **kwargs):
+        # This block cannot draw, so it must pass it forward
+        self.observable_block.draw(*args, **kwargs)
+
     def paintEvent(self, event: QPaintEvent) -> None:
         """Paints the widget"""
         painter = QPainter(self)
-        self.tile.draw(painter, Position(0, 0))
+        self.observable_block.draw(painter, Position(0, 0))
         super().paintEvent(event)
