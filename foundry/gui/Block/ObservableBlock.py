@@ -28,7 +28,7 @@ class ObservableBlock(AbstractBlock):
             transparency: bool = True
     ) -> None:
 
-        self._block = Block(
+        self._observed_block = Block(
             observable_size := ObservableSize.from_size(size),
             index,
             ptn_tbl,
@@ -72,71 +72,71 @@ class ObservableBlock(AbstractBlock):
     @property
     def size(self) -> Size:
         """The size of the block in units of 16 pixels"""
-        return self._block.size
+        return self._observed_block.size
 
     @size.setter
     def size(self, size: Size) -> None:
-        self.block.size.size = size
+        self.observed_block.size.size = size
 
     @property
     def index(self) -> int:
         """The index of the block"""
-        return self._block.index
+        return self._observed_block.index
 
     @index.setter
     def index(self, index: int) -> None:
-        self.block.index = index
+        self.observed_block.index = index
         self.index_update_observable.notify_observers(index)
 
     @property
     def tsa_data(self) -> bytearray:
         """Find the tsa data from a given offset"""
-        return self._block.tsa_data
+        return self._observed_block.tsa_data
 
     @tsa_data.setter
     def tsa_data(self, tsa_data: bytearray) -> None:
-        self.block.tsa_data = tsa_data
+        self.observed_block.tsa_data = tsa_data
         self.tsa_data_update_observable.notify_observers(tsa_data)
 
     @property
     def pattern_table(self) -> PatternTableHandler:
         """The pattern table for the tiles"""
-        return self._block.pattern_table
+        return self._observed_block.pattern_table
 
     @pattern_table.setter
     def pattern_table(self, pattern_table: PatternTableHandler) -> None:
-        self.block.pattern_table.pattern_table = pattern_table
+        self.observed_block.pattern_table.pattern_table = pattern_table
 
     @property
     def palette_set(self) -> PaletteSet:
         """The palette currently used by the tsa"""
-        return self._block.palette_set
+        return self._observed_block.palette_set
 
     @palette_set.setter
     def palette_set(self, palette_set: PaletteSet) -> None:
-        self.block.palette_set.palette_set = palette_set
+        self.observed_block.palette_set.palette_set = palette_set
 
     @property
     def transparency(self) -> bool:
         """Determines if the blocks will be transparent"""
-        return self._block.transparency
+        return self._observed_block.transparency
 
     @transparency.setter
     def transparency(self, transparency: bool) -> None:
-        self.block.transparency = transparency
+        self.observed_block.transparency = transparency
         self.transparency_update_observable.notify_observers(transparency)
 
     @property
     def tiles(self) -> Tuple[int]:
-        return self._block.tiles
+        return self._observed_block.tiles
 
     @property
-    def block(self) -> Block:
+    def observed_block(self) -> Block:
         return Block(self.size, self.index, self.pattern_table, self.palette_set, self.tsa_data, self.transparency)
 
-    @block.setter
-    def block(self, block: Block) -> None:
-        if self._block != block:
+    @observed_block.setter
+    def observed_block(self, block: Block) -> None:
+        if self._observed_block != block:
             # Silence the update, to prevent unnecessary updates.
             self.update_observable.silenced = True
             self.size, self.index, self.pattern_table = block.size, block.index, block.pattern_table
