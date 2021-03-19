@@ -15,5 +15,5 @@ class PatternTableTilePicker(PatternTableDisplayer):
 
     def _load_tile(self, idx: int) -> QWidget:
         widget = TrackingTile(self, Tile(self.tile_size, idx, self.pattern_table, self.tile_palette))
-        widget.single_click_observable.attach_observer(lambda *_, i=idx: self.update_action(i))
+        widget.single_click_observable.attach_observer(lambda *_, i=idx: self.update_observable(i))
         return widget
