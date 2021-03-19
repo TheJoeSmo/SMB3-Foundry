@@ -19,11 +19,11 @@ class BlockTileEditor(BlockTileTracker):
         tile.double_click_observable.attach_observer(
             lambda *_: TilePickerPopUp(
                 self,
-                tile.tile_palette,
+                tile.palette,
                 self.block.pattern_table,
                 self.block.size,
                 action=lambda i, t=tile: setattr(t, "index", i)
-            )
+            ).exec_()
         )
 
         return tile
