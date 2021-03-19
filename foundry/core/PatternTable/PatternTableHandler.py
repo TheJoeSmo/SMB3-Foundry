@@ -16,7 +16,7 @@ def _chr_offset() -> int:
 class PatternTableHandler:
     """Makes an artificial PPU for the graphics"""
     def __init__(self, pattern_table: PatternTable):
-        self.pattern_table = ObservablePatternTable.from_pattern_table(pattern_table)
+        self._pattern_table = ObservablePatternTable.from_pattern_table(pattern_table)
 
         # Have a check to automatically update the data when needed
         self._data = bytearray()
@@ -25,6 +25,14 @@ class PatternTableHandler:
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.pattern_table}) with data {self.data}"
+
+    @property
+    def pattern_table(self) -> ObservablePatternTable:
+        return self._pattern_table
+
+    @pattern_table.setter
+    def pattern_table(self, pattern_table: PatternTable) -> None:
+        self._pattern_table.pattern_table = pattern_table
 
     @property
     def data(self):
