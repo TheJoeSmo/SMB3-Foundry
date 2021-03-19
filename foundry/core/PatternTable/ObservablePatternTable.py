@@ -73,6 +73,6 @@ class ObservablePatternTable(PatternTable):
     @pattern_table.setter
     def pattern_table(self, pattern_table: PatternTable) -> None:
         if self.pattern_table != pattern_table:
-            for i, page in enumerate(pattern_table):
-                self._pattern_table[i] = page
+            for i in range(4):
+                self._pattern_table[i] = pattern_table[i]
             self.page_update_observable.notify_observers(self.pattern_table)
