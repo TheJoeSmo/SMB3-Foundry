@@ -63,9 +63,6 @@ class ObservablePaletteSet(PaletteSet):
 
     @palette_set.setter
     def palette_set(self, palette_set: PaletteSet) -> None:
-        self._palette_set = palette_set
-        self.update_observable(palette_set)
-
         # Only provide an update if something changes
         if palette_set != self.palette_set:
             # We do not want multiple updates, so we will pause it while we set each palette
