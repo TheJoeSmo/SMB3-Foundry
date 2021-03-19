@@ -32,9 +32,9 @@ class BlockEditor(QWidget):
         def update_block_tiles(spinner_idx: int):
             """Updates the block's tiles by its respective spinner"""
             def update_block_tiles(i: int):
-                tiles = self.block.tiles
+                tiles = list(self.block.tiles)
                 tiles[spinner_idx] = i
-                self.block.tiles = tiles
+                self.block.tiles = tuple(tiles)
             return update_block_tiles
 
         spinner_sides = ["top left", "bottom left", "top right", "bottom right"]
