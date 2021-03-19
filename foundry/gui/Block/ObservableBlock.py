@@ -130,6 +130,12 @@ class ObservableBlock(AbstractBlock):
     def tiles(self) -> Tuple[int]:
         return self._observed_block.tiles
 
+    @tiles.setter
+    def tiles(self, tiles: Tuple[int]):
+        block = self.observed_block
+        block.tiles = tiles
+        self.observed_block = block
+
     @property
     def observed_block(self) -> Block:
         return Block(self.size, self.index, self.pattern_table, self.palette_set, self.tsa_data, self.transparency)
