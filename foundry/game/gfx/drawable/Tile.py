@@ -77,7 +77,10 @@ class Tile:
             if color_index == self.background_color_index:
                 self.pixels.extend(MASK_COLOR)
             else:
-                self.pixels.extend(NESPalette[color])
+                try:
+                    self.pixels.extend(NESPalette[color])
+                except TypeError:
+                    self.pixels.extend((color.red, color.green, color.blue))
 
         assert len(self.pixels) == 3 * Tile.PIXEL_COUNT
 
