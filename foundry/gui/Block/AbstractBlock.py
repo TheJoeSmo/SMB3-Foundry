@@ -40,7 +40,7 @@ class AbstractBlock:
 
     @classmethod
     def from_block(cls, block: "AbstractBlock"):
-        cls(block.size, block.index, block.pattern_table, block.palette_set, block.tsa_data, block.transparency)
+        return cls(block.size, block.index, block.pattern_table, block.palette_set, block.tsa_data, block.transparency)
 
     @property
     @abstractmethod
