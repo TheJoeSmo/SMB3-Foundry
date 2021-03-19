@@ -28,8 +28,7 @@ class WidgetTile(QWidget):
 
         # Connect observables
         self.update_observable = GenericObservable("update")
-        self.refresh_observable = GenericObservable("refresh")
-        self.refresh_observable.attach_observer(lambda *_: self.update())
+        self.update_observable.attach_observer(lambda *_: self.update())
         self.index_update_observable = GenericObservable("index_update")
         self.index_update_observable.attach_observer(lambda *_: self.update_observable.notify_observers())
         self.size_update_observable = GenericObservable("size_update")
@@ -38,11 +37,6 @@ class WidgetTile(QWidget):
         self.pattern_table_update_observable.attach_observer(lambda *_: self.update_observable.notify_observers())
         self.palette_update_observable = GenericObservable("palette_update")
         self.palette_update_observable.attach_observer(lambda *_: self.update_observable.notify_observers())
-
-        # Redraw if a refresh update occurs
-        self.refresh_observable.attach_observer(
-            lambda update_type, *_: self.update() if update_type == 1 else 0
-        )
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.parent}, {self.tile})"
@@ -56,7 +50,6 @@ class WidgetTile(QWidget):
     def index(self, index: int) -> None:
         self.tile.index = index
         self.index_update_observable.notify_observers(index)
-        self.refresh_observable.notify_observers()  # Redraw the widget
 
     @property
     def size(self) -> Size:
@@ -67,7 +60,6 @@ class WidgetTile(QWidget):
     def size(self, size: Size) -> None:
         self.tile.size = size
         self.size_update_observable.notify_observers(size)
-        self.refresh_observable.notify_observers()  # Redraw the widget
 
     @property
     def pattern_table(self) -> PatternTableHandler:
@@ -78,7 +70,6 @@ class WidgetTile(QWidget):
     def pattern_table(self, pattern_table: PatternTableHandler) -> None:
         self.tile.pattern_table = pattern_table
         self.pattern_table_update_observable.notify_observers(pattern_table)
-        self.refresh_observable.notify_observers()  # Redraw the widget
 
     @property
     def palette(self) -> Palette:
@@ -89,7 +80,6 @@ class WidgetTile(QWidget):
     def palette(self, palette: Palette) -> None:
         self.tile.palette = palette
         self.palette_update_observable.notify_observers(palette)
-        self.refresh_observable.notify_observers()  # Redraw the widget
 
     def sizeHint(self):
         """The ideal size of the widget"""
