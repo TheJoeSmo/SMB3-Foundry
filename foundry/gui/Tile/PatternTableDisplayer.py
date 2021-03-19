@@ -32,7 +32,7 @@ class PatternTableDisplayer(QWidget):
         self.pattern_table = pattern_table
         self.tile_size = size if size is not None else Size(1, 1)
 
-        self.update_action = GenericObservable("update")
+        self.update_observable = GenericObservable("update")
 
         grid_layout = QGridLayout()
         grid_layout.setSpacing(1)
