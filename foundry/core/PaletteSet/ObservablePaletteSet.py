@@ -72,8 +72,8 @@ class ObservablePaletteSet(PaletteSet):
             self.palette_set_update_observable.silenced = True
 
             # We want to preserve the observable colors inside the palette set, so we will manually transfer it
-            for i, palette in enumerate(palette_set):
-                self._palette_set[i].palette = palette  # Push the new palette into the observable palette
+            for i in range(4):
+                self._palette_set[i].palette = palette_set[i]  # Push the new palette into the observable palette
 
             # Send the update manually because we silenced it
             self.palette_set_update_observable.silenced = False
