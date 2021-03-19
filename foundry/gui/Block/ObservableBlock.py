@@ -105,7 +105,7 @@ class ObservableBlock(AbstractBlock):
 
     @pattern_table.setter
     def pattern_table(self, pattern_table: PatternTableHandler) -> None:
-        self.observed_block.pattern_table.pattern_table = pattern_table
+        self.observed_block.pattern_table.pattern_table = pattern_table.pattern_table
 
     @property
     def palette_set(self) -> PaletteSet:
