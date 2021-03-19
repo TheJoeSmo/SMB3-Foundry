@@ -72,7 +72,7 @@ class ObservableBlock(AbstractBlock):
     @property
     def size(self) -> Size:
         """The size of the block in units of 16 pixels"""
-        return self.block.size
+        return self._block.size
 
     @size.setter
     def size(self, size: Size) -> None:
@@ -81,7 +81,7 @@ class ObservableBlock(AbstractBlock):
     @property
     def index(self) -> int:
         """The index of the block"""
-        return self.block.index
+        return self._block.index
 
     @index.setter
     def index(self, index: int) -> None:
@@ -91,7 +91,7 @@ class ObservableBlock(AbstractBlock):
     @property
     def tsa_data(self) -> bytearray:
         """Find the tsa data from a given offset"""
-        return self.block.tsa_data
+        return self._block.tsa_data
 
     @tsa_data.setter
     def tsa_data(self, tsa_data: bytearray) -> None:
@@ -101,7 +101,7 @@ class ObservableBlock(AbstractBlock):
     @property
     def pattern_table(self) -> PatternTableHandler:
         """The pattern table for the tiles"""
-        return self.block.pattern_table
+        return self._block.pattern_table
 
     @pattern_table.setter
     def pattern_table(self, pattern_table: PatternTableHandler) -> None:
@@ -110,7 +110,7 @@ class ObservableBlock(AbstractBlock):
     @property
     def palette_set(self) -> PaletteSet:
         """The palette currently used by the tsa"""
-        return self.block.palette_set
+        return self._block.palette_set
 
     @palette_set.setter
     def palette_set(self, palette_set: PaletteSet) -> None:
@@ -119,7 +119,7 @@ class ObservableBlock(AbstractBlock):
     @property
     def transparency(self) -> bool:
         """Determines if the blocks will be transparent"""
-        return self.block.transparency
+        return self._block.transparency
 
     @transparency.setter
     def transparency(self, transparency: bool) -> None:
