@@ -14,5 +14,5 @@ class TrackingBlock(TrackingWidget, WidgetBlock):
     A block that tracks the movement and button presses of the mouse
     """
 
-    def __init__(self, parent: Optional[QWidget], tile: AbstractBlock) -> None:
-        super().__init__(parent, tile)
+    def __init__(self, parent: Optional[QWidget], block: AbstractBlock) -> None:
+        super().__init__(parent, block)
