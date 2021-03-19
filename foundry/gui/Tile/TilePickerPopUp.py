@@ -27,12 +27,12 @@ class TilePickerPopUp(Dialog):
 
         layout = QVBoxLayout(self)
         self.tile_picker = TilePicker(self, palette, pattern_table, size)
-        layout.addWidget(self.color_picker)
+        layout.addWidget(self.tile_picker)
         self.setLayout(layout)
 
-        self.tile_picker.update_action.attach_observer(lambda *_: self.accept())
+        self.tile_picker.update_observable.attach_observer(lambda *_: self.accept())
         if action is not None:
-            self.color_picker.update_observable.attach_observer(action)
+            self.tile_picker.update_observable.attach_observer(action)
 
         self.setWhatsThis(self.tile_picker.whats_this_text)  # Steal the what this is text
 
