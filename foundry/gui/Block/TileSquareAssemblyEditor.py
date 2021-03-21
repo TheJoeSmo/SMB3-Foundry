@@ -2,6 +2,7 @@
 
 import yaml
 from yaml import CLoader as Loader
+from copy import copy
 from typing import Optional
 from PySide2.QtGui import Qt
 from PySide2.QtWidgets import QWhatsThis, QSizePolicy
@@ -65,17 +66,21 @@ class TileSquareAssemblyEditor(ChildWindow):
         # Pattern table widget and updates
         self.pattern_table_update_observable = GenericObservable("pattern_table_update")
         self.tileset_update_observable = GenericObservable("tileset_update")
+        self.tileset_update_observable.attach_observer(lambda *args: print("tileset", *args))
         self.pattern_table_update_observable.attach_observer(lambda *_: self.update_observable.notify_observers())
         self.pattern_table_widget = TilesetPatternTableWidget(self, tileset)
         self._tsa_data = self.pattern_table_widget.pattern_table.data
         self.pattern_table_widget.update_observable.attach_observer(
-            lambda *_: self.pattern_table_widget.pattern_table
+            lambda *_: self.pattern_table_update_observable.notify_observers(
+                self.pattern_table_widget.pattern_table
+            )
         )
         self.pattern_table_widget.update_observable.attach_observer(self.tileset_update_observable.notify_observers)
 
         # Whenever the pattern table changes, the tsa needs to as well
         def update_tsa_data_from_pattern_table(pattern_table_handler: PatternTableHandler):
-            self.tsa_data = pattern_table_handler.data
+            self._tsa_data = pattern_table_handler.data
+            self.tsa_data_observable.notify_observers(self.tsa_data)
         self.pattern_table_update_observable.attach_observer(update_tsa_data_from_pattern_table)
 
         self.tileset_toolbar = Toolbar.default_toolbox(
@@ -108,20 +113,24 @@ class TileSquareAssemblyEditor(ChildWindow):
         self.block_editor = BlockEditor(self, self.edited_block)
         self.block_editor.tsa_data_update_observable.attach_observer(lambda d: setattr(self, "tsa_data", d))
 
-        def update_pattern_table(pattern_table: PatternTable):
-            self.block_editor.pattern_table.pattern_table = pattern_table
+        def update_selected_block(index: int):
+            self.block_editor.index = index
+        self.block_currently_selected_observable.attach_observer(update_selected_block)
+
+        def update_pattern_table(pattern_table: PatternTableHandler):
+            self.block_editor.pattern_table.pattern_table = pattern_table.pattern_table
         self.pattern_table_update_observable.attach_observer(update_pattern_table)
 
         def update_palette_set(palette_set: PaletteSet):
-            self.block.palette_set = palette_set
+            self.edited_block.palette_set = palette_set
         self.palette_set_update_observable.attach_observer(update_palette_set)
 
         def update_tsa_data(tsa_data: bytearray):
-            self.block.tsa_data = tsa_data
+            self.edited_block.tsa_data = tsa_data
         self.tsa_data_observable.attach_observer(update_tsa_data)
 
         def update_zoom(size):
-            self.block.size = Size(size.width * 3, size.height * 3)
+            self.edited_block.size = Size(size.width * 3, size.height * 3)
         self.size_update_observable.attach_observer(update_zoom)
 
         self.block_editor_toolbox = Toolbar.default_toolbox(
@@ -132,7 +141,7 @@ class TileSquareAssemblyEditor(ChildWindow):
 
         def set_block_selected(selected: int):
             self.block_currently_selected = selected
-        self.tsa_viewer.update_observable.attach_observer(set_block_selected)
+        self.tsa_viewer.block_selected_update_observable.attach_observer(set_block_selected)
 
         def update_tileset(tileset: int):
             self.tsa_viewer.tileset = tileset
@@ -163,13 +172,14 @@ class TileSquareAssemblyEditor(ChildWindow):
 
     @property
     def tsa_data(self) -> bytearray:
-        return self._tsa_data
+        return copy(self._tsa_data)
 
     @tsa_data.setter
     def tsa_data(self, tsa_data: bytearray) -> None:
         if self._tsa_data != tsa_data:
-            self._tsa_data = tsa_data
-            self.tsa_data_observable.notify_observers(self._tsa_data)
+            # We do not want to end up having the same tsa everywhere, so we must copy it
+            self._tsa_data = copy(tsa_data)
+            self.tsa_data_observable.notify_observers(copy(self._tsa_data))
 
     @property
     def transparency(self) -> bool:
@@ -313,6 +323,6 @@ if __name__ == "__main__":
 
     app = QApplication()
     main_window = QMainWindow()
-    main_window.setCentralWidget(TileSquareAssemblyEditor(None, 0, pal))
+    main_window.setCentralWidget(TileSquareAssemblyEditor(None, 1, pal))
     main_window.showNormal()
     app.exec_()
