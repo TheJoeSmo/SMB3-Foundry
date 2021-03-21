@@ -22,7 +22,25 @@ class BlockEditor(QWidget):
     def __init__(self, parent: Optional[QWidget], block: AbstractBlock) -> None:
         super().__init__(parent)
 
-        self.block = ObservableBlock.from_block(block)
+        self._block = ObservableBlock.from_block(block)
+
+        # Steal the block update observables, putting the responsibility on the block itself
+        self.update_observable = GenericObservable("update")
+        self.update_observable.attach_observer(lambda *_: self.update)
+        self.block.update_observable.attach_observer(self.update_observable.notify_observers)
+        self.size_update_observable = GenericObservable("size_update")
+        self.block.size_update_observable.attach_observer(self.size_update_observable.notify_observers)
+        self.index_update_observable = GenericObservable("index_update")
+        self.block.index_update_observable.attach_observer(self.index_update_observable.notify_observers)
+        self.pattern_table_update_observable = GenericObservable("pattern_table_update")
+        self.block.pattern_table_update_observable.attach_observer(
+            self.pattern_table_update_observable.notify_observers)
+        self.palette_set_update_observable = GenericObservable("palette_set_update")
+        self.block.palette_set_update_observable.attach_observer(self.palette_set_update_observable.notify_observers)
+        self.tsa_data_update_observable = GenericObservable("tsa_data_update")
+        self.block.tsa_data_update_observable.attach_observer(self.tsa_data_update_observable.notify_observers)
+        self.transparency_update_observable = GenericObservable("transparency_update")
+        self.block.transparency_update_observable.attach_observer(self.transparency_update_observable.notify_observers)
 
         # Set up the layout of the block editor
         grid = QGridLayout()
@@ -33,43 +51,41 @@ class BlockEditor(QWidget):
             """Updates the block's tiles by its respective spinner"""
             def update_block_tiles(i: int):
                 tiles = list(self.block.tiles)
-                tiles[spinner_idx] = i
-                self.block.tiles = tuple(tiles)
+                if tiles[spinner_idx] != i:
+                    tiles[spinner_idx] = i
+                    self.block.tiles = tuple(tiles)
             return update_block_tiles
 
+        def update_spinners(spinner_idx: int):
+            """Refresh the spinners when needed"""
+            def update_spinner(*args, **kwargs):
+                spinners[spinner_idx].value_update_observable.silenced = True
+                spinners[spinner_idx].text_update_observable.silenced = True
+                spinners[spinner_idx].setValue(self.block.tiles[spinner_idx])
+                spinners[spinner_idx].value_update_observable.silenced = False
+                spinners[spinner_idx].text_update_observable.silenced = False
+            return update_spinner
+
         spinner_sides = ["top left", "bottom left", "top right", "bottom right"]
+        spinners = []
         for idx in range(4):
-            spinner = HexSpinner(self, maximum=0xFF)
-            spinner.setValue(self.block.tiles[idx])
-            spinner.value_update_observable.attach_observer(update_block_tiles(idx))
-            spinner.setWhatsThis(
+            spinners.append(HexSpinner(self, maximum=0xFF))
+            spinners[idx].setValue(self.block.tiles[idx])
+            spinners[idx].value_update_observable.attach_observer(update_block_tiles(idx))
+            self.index_update_observable.attach_observer(update_spinners(idx))
+            self.tsa_data_update_observable.attach_observer(update_spinners(idx))
+            spinners[idx].setWhatsThis(
                 "<b>Block Editor</b>"
                 "<br/>"
                 f"Edit this spinner to change the {spinner_sides[idx]} tile."
                 "<br/>"
             )
             x, y = idx & 1, idx // 2 * 2
-            grid.addWidget(spinner, x, y)
+            grid.addWidget(spinners[idx], x, y)
 
         # A more gui friendly way to edit the gui.
         grid.addWidget(BlockTileEditor(self, self.block), 0, 1, 0, 1, Qt.AlignCenter)
         self.setLayout(grid)
-
-        # Steal the block update observables, putting the responsibility on the block itself
-        self.update_observable = GenericObservable("update")
-        self.block.update_observable.attach_observer(self.update_observable.notify_observers)
-        self.size_update_observable = GenericObservable("size_update")
-        self.block.size_update_observable.attach_observer(self.size_update_observable.notify_observers)
-        self.index_update_observable = GenericObservable("index_update")
-        self.block.index_update_observable.attach_observer(self.index_update_observable.notify_observers)
-        self.pattern_table_update_observable = GenericObservable("pattern_table_update")
-        self.block.pattern_table_update_observable.attach_observer(self.pattern_table_update_observable.notify_observers)
-        self.palette_set_update_observable = GenericObservable("palette_set_update")
-        self.block.palette_set_update_observable.attach_observer(self.palette_set_update_observable.notify_observers)
-        self.tsa_data_update_observable = GenericObservable("tsa_data_update")
-        self.block.tsa_data_update_observable.attach_observer(self.tsa_data_update_observable.notify_observers)
-        self.transparency_update_observable = GenericObservable("transparency_update")
-        self.block.transparency_update_observable.attach_observer(self.transparency_update_observable.notify_observers)
 
         self.setWhatsThis(
             "<b>Block Editor</b>"
@@ -80,6 +96,10 @@ class BlockEditor(QWidget):
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.parent}, {self.block})"
+
+    @property
+    def block(self) -> ObservableBlock:
+        return self._block  # Don't set the block or bad things happen
 
     @property
     def index(self) -> int:
