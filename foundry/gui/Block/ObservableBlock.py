@@ -76,7 +76,7 @@ class ObservableBlock(AbstractBlock):
 
     @size.setter
     def size(self, size: Size) -> None:
-        self.observed_block.size.size = size
+        self._observed_block.size.size = size
 
     @property
     def index(self) -> int:
@@ -85,7 +85,7 @@ class ObservableBlock(AbstractBlock):
 
     @index.setter
     def index(self, index: int) -> None:
-        self.observed_block.index = index
+        self._observed_block.index = index
         self.index_update_observable.notify_observers(index)
 
     @property
@@ -95,7 +95,7 @@ class ObservableBlock(AbstractBlock):
 
     @tsa_data.setter
     def tsa_data(self, tsa_data: bytearray) -> None:
-        self.observed_block.tsa_data = tsa_data
+        self._observed_block.tsa_data = tsa_data
         self.tsa_data_update_observable.notify_observers(tsa_data)
 
     @property
@@ -105,7 +105,7 @@ class ObservableBlock(AbstractBlock):
 
     @pattern_table.setter
     def pattern_table(self, pattern_table: PatternTableHandler) -> None:
-        self.observed_block.pattern_table.pattern_table = pattern_table.pattern_table
+        self._observed_block.pattern_table.pattern_table = pattern_table.pattern_table
 
     @property
     def palette_set(self) -> PaletteSet:
@@ -134,7 +134,7 @@ class ObservableBlock(AbstractBlock):
     def tiles(self, tiles: Tuple[int]):
         block = self.observed_block
         block.tiles = tiles
-        self.observed_block = block
+        self._observed_block = block
 
     @property
     def observed_block(self) -> Block:
