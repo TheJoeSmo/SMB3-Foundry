@@ -132,9 +132,8 @@ class ObservableBlock(AbstractBlock):
 
     @tiles.setter
     def tiles(self, tiles: Tuple[int]):
-        block = self.observed_block
-        block.tiles = tiles
-        self._observed_block = block
+        self.observed_block.tiles = tiles
+        self.tsa_data_update_observable.notify_observers(self.tsa_data)
 
     @property
     def observed_block(self) -> Block:
