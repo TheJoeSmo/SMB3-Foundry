@@ -5,6 +5,7 @@ from PySide2.QtWidgets import QWidget, QGridLayout
 from PySide2.QtGui import Qt
 
 from foundry.core.PatternTable.PatternTableHandler import PatternTableHandler
+from foundry.core.PatternTable.PatternTable import PatternTable
 from foundry.core.PaletteSet.PaletteSet import PaletteSet
 
 from foundry.core.Observables.GenericObservable import GenericObservable
@@ -53,7 +54,7 @@ class BlockEditor(QWidget):
                 tiles = list(self.block.tiles)
                 if tiles[spinner_idx] != i:
                     tiles[spinner_idx] = i
-                    self.block.tiles = tuple(tiles)
+                    self._block.tiles = tuple(tiles)
             return update_block_tiles
 
         def update_spinners(spinner_idx: int):
@@ -86,9 +87,26 @@ class BlockEditor(QWidget):
         # A more gui friendly way to edit the gui.
         block_editor = BlockTileEditor(self, self.block)
 
+        # Send the block editor updates, as it just has a copy of the actual block
+        def update_block_editor_size(size: Size):
+            block_editor._block.size = size
+        self._block.size_update_observable.attach_observer(update_block_editor_size)
+
         def update_block_editor_index(index: int):
             block_editor._block.index = index
         self.index_update_observable.attach_observer(update_block_editor_index)
+
+        def update_block_editor_tsa_data(tsa_data: bytearray):
+            block_editor._block.tsa_data = tsa_data
+        self.tsa_data_update_observable.attach_observer(update_block_editor_tsa_data)
+
+        def update_block_editor_pattern_table(pattern_table: PatternTable):
+            block_editor._block.pattern_table.pattern_table = pattern_table
+        self.pattern_table_update_observable.attach_observer(update_block_editor_pattern_table)
+
+        def update_block_editor_palette_set(palette_set: PaletteSet):
+            block_editor._block.palette = palette_set[self._block.index // 0x40]
+        self.palette_set_update_observable.attach_observer(update_block_editor_palette_set)
 
         grid.addWidget(block_editor, 0, 1, 0, 1, Qt.AlignCenter)
         self.setLayout(grid)
