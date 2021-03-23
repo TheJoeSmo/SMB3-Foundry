@@ -21,7 +21,10 @@ class TilesetPatternTableWidget(ComboBox):
     def __init__(self, parent: Optional[QWidget], tileset: int = 0):
         self.pattern_table = PatternTableHandler(PatternTable.from_tileset(tileset))
         super().__init__(
-            parent, [ComboBoxOption(_tileset_info[i]["name"], self.update_pattern_table(i)) for i in _tileset_info]
+            parent, [ComboBoxOption(
+                _tileset_info[i]["name"],
+                lambda *_, idx=i: self.update_pattern_table(idx)
+            ) for i in _tileset_info]
         )
         self.setCurrentIndex(tileset)
 
