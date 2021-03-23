@@ -23,7 +23,7 @@ class Block(AbstractBlock):
             transparency: bool = True
     ):
         """Creates a block from a tsa offset"""
-        from foundry.game.File import ROM, TSA_TABLE_SIZE, TSA_TABLE_INTERVAL
+        from foundry.game.File import ROM
         tsa_data = ROM().get_tsa_data(tsa_offset)
         return cls(size, index, ptn_tbl, pal_set, tsa_data, transparency)
 
