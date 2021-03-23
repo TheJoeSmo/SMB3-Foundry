@@ -23,7 +23,7 @@ class PaletteSetDisplayerWidget(QWidget):
         self._palette_set = ObservablePaletteSet.from_palette_set(palette_set)
 
         self.update_observable = GenericObservable("update")
-        self._palette_set.update_observable.attach_observer(lambda pal: pal)
+        self._palette_set.update_observable.attach_observer(lambda pal: self.update_observable.notify_observers(pal))
 
         hbox = QHBoxLayout()
         hbox.setContentsMargins(0, 0, 0, 0)
@@ -46,7 +46,7 @@ class PaletteSetDisplayerWidget(QWidget):
         return f"{self.__class__.__name__}({self.parent}, {self.palette_set})"
 
     def _load_button(self) -> QWidget:
-        return ColorWidget.as_tiny(self, self.palette_set[0][0])
+        return ColorWidget(self, self.palette_set[0][0])
 
     def _load_palette(self, idx: int) -> QWidget:
         return PaletteWidget(self, self.palette_set[idx])
