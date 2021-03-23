@@ -84,7 +84,13 @@ class BlockEditor(QWidget):
             grid.addWidget(spinners[idx], x, y)
 
         # A more gui friendly way to edit the gui.
-        grid.addWidget(BlockTileEditor(self, self.block), 0, 1, 0, 1, Qt.AlignCenter)
+        block_editor = BlockTileEditor(self, self.block)
+
+        def update_block_editor_index(index: int):
+            block_editor._block.index = index
+        self.index_update_observable.attach_observer(update_block_editor_index)
+
+        grid.addWidget(block_editor, 0, 1, 0, 1, Qt.AlignCenter)
         self.setLayout(grid)
 
         self.setWhatsThis(
