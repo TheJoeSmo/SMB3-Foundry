@@ -63,10 +63,10 @@ class BlockTileDisplayer(QWidget):
         self._block.size_update_observable.attach_observer(update_tile_size)
 
         def update_tile_index(*args):
-            widget.index = self.block.tiles[idx]
+            widget.index = self._block.tiles[idx]
 
         self._block.index_update_observable.attach_observer(update_tile_index)
-        self._block.tsa_data_update_observable.attach_observer(lambda *_: update_tile_size(self._block.index))
+        self._block.tsa_data_update_observable.attach_observer(lambda *_: update_tile_index(self._block.index))
 
         def update_pattern_table(pattern_table: PatternTable):
             widget.pattern_table.pattern_table = pattern_table
