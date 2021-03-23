@@ -69,7 +69,7 @@ class TileSquareAssemblyEditor(ChildWindow):
         self.tileset_update_observable.attach_observer(lambda *args: print("tileset", *args))
         self.pattern_table_update_observable.attach_observer(lambda *_: self.update_observable.notify_observers())
         self.pattern_table_widget = TilesetPatternTableWidget(self, tileset)
-        self._tsa_data = self.pattern_table_widget.pattern_table.data
+        self._tsa_data = ROM().get_tsa_data(tileset)
         self.pattern_table_widget.update_observable.attach_observer(
             lambda *_: self.pattern_table_update_observable.notify_observers(
                 self.pattern_table_widget.pattern_table
@@ -323,6 +323,6 @@ if __name__ == "__main__":
 
     app = QApplication()
     main_window = QMainWindow()
-    main_window.setCentralWidget(TileSquareAssemblyEditor(None, 1, pal))
+    main_window.setCentralWidget(TileSquareAssemblyEditor(None, 0, pal))
     main_window.showNormal()
     app.exec_()
