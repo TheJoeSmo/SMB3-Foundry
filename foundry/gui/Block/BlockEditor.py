@@ -12,7 +12,7 @@ from foundry.core.Observables.GenericObservable import GenericObservable
 from foundry.core.Size.Size import Size
 
 from foundry.gui.Block.BlockTileEditor import BlockTileEditor
-from foundry.gui.Block.ObservableBlock import ObservableBlock
+from foundry.core.Block.ObservableBlock import ObservableBlock
 from foundry.core.Block.AbstractBlock import AbstractBlock
 from foundry.gui.QSpinner.HexSpinner import HexSpinner
 

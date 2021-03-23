@@ -10,7 +10,7 @@ from foundry.core.PaletteSet.PaletteSet import PaletteSet
 
 from foundry.core.Block.AbstractBlock import AbstractBlock
 from foundry.core.Block.Block import Block
-from foundry.gui.Block.ObservableBlock import ObservableBlock
+from foundry.core.Block.ObservableBlock import ObservableBlock
 from foundry.gui.Tile.Tile import Tile
 from foundry.gui.Tile.WidgetTile import WidgetTile
 
