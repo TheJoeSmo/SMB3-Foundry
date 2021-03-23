@@ -51,4 +51,7 @@ class PatternTable:
         if tileset not in graphic_set2chr_index and tileset not in common_set2chr_index:
             return cls.from_background_pattern_table(tileset, tileset)
         else:
-            return cls.from_background_pattern_table(graphic_set2chr_index[tileset], common_set2chr_index[tileset])
+            return cls.from_background_pattern_table(
+                graphic_set2chr_index[tileset] & 0b1111_1110,
+                common_set2chr_index[tileset] & 0b1111_1110
+            )
