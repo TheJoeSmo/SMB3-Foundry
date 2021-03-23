@@ -22,9 +22,10 @@ class BlockTileTracker(BlockTileDisplayer):
         # Push the tile update upstream
 
         def push_tile_to_block(tile_index, i):
-            tile = list(self._block.tiles)
-            tile[i] = tile_index
-            self._block.tiles = tuple(tile)
+            if (tiles := self._block.tiles)[i] != tile_index:
+                t = list(tiles)
+                t[i] = tile_index
+                self._block.tiles = tuple(t)
 
         tile.index_update_observable.attach_observer(lambda tile_index, i=idx: push_tile_to_block(tile_index, i))
 
