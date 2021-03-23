@@ -10,7 +10,7 @@ from foundry.core.Size.Size import Size
 
 from foundry.gui.Block.TileSquareAssemblyDisplayer import TileSquareAssemblyDisplayer
 from foundry.gui.Block.TrackingBlock import TrackingBlock
-from foundry.gui.Block.Block import Block
+from foundry.core.Block.Block import Block
 
 
 class TileSquareAssemblyPicker(TileSquareAssemblyDisplayer):

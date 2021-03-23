@@ -10,7 +10,7 @@ from foundry.core.PaletteSet.PaletteSet import PaletteSet
 from foundry.core.Size.ObservableSize import ObservableSize
 from foundry.core.Size.Size import Size
 
-from foundry.gui.Block.Block import Block
+from foundry.core.Block.Block import Block
 
 from foundry.core.Block.AbstractBlock import AbstractBlock
 

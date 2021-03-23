@@ -15,7 +15,7 @@ from foundry.core.Size.Size import Size
 from foundry.game.File import ROM
 
 from foundry.gui.Block.WidgetBlock import WidgetBlock
-from foundry.gui.Block.Block import Block
+from foundry.core.Block.Block import Block
 
 
 class TileSquareAssemblyDisplayer(QWidget):

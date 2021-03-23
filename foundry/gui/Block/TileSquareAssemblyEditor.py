@@ -13,17 +13,15 @@ from foundry import icon, data_dir
 from foundry.core.Observables.GenericObservable import GenericObservable
 from foundry.core.Size.Size import Size
 
-from foundry.game.File import ROM
 from foundry.core.PaletteSet.PaletteSet import PaletteSet
 from foundry.gui.ChildWindow.ChildWindow import ChildWindow
 from foundry.gui.QToolbar.Toolbar import Toolbar
 from foundry.gui.PaletteSet.PaletteSetEditorWidget import PaletteSetEditorWidget
 from foundry.gui.Block.BlockEditor import BlockEditor
-from foundry.gui.Block.Block import Block
+from foundry.core.Block.Block import Block
 from foundry.gui.PatternTable.TilesetPatternTableWidget import TilesetPatternTableWidget
 from foundry.gui.Panel.Panel import Panel
 
-from foundry.core.PatternTable.PatternTable import PatternTable
 from foundry.core.PatternTable.PatternTableHandler import PatternTableHandler
 
 from foundry.gui.Block.TileSquareAssemblyPicker import TileSquareAssemblyPicker
