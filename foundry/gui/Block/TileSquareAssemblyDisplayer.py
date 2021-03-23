@@ -12,6 +12,8 @@ from foundry.core.PaletteSet.ObservablePaletteSet import ObservablePaletteSet
 from foundry.core.PaletteSet.PaletteSet import PaletteSet
 from foundry.core.Size.Size import Size
 
+from foundry.game.File import ROM
+
 from foundry.gui.Block.WidgetBlock import WidgetBlock
 from foundry.gui.Block.Block import Block
 
@@ -43,9 +45,12 @@ class TileSquareAssemblyDisplayer(QWidget):
             self.pattern_table.pattern_table = PatternTable.from_tileset(tileset)
 
         self.tileset_update_observable.attach_observer(update_tileset)
+        self.tsa_data_update_observable = GenericObservable("tsa_data_update")
+        self.tileset_update_observable.attach_observer(lambda ts: setattr(self, "tsa_data", ROM().get_tsa_data(ts)))
         self._palette_set = ObservablePaletteSet.from_palette_set(palette_set)
         self._pattern_table = PatternTableHandler(PatternTable.from_tileset(tileset))
         self._tileset = tileset
+        self._tsa_data = ROM().get_tsa_data(tileset)
         self.block_size = size if size is not None else Size(1, 1)
 
         grid_layout = QGridLayout()
@@ -66,14 +71,21 @@ class TileSquareAssemblyDisplayer(QWidget):
     def _load_block(self, idx: int) -> QWidget:
         widget = WidgetBlock(
             self,
-            Block.from_tsa(self.block_size, idx, self.pattern_table, self.palette_set, self.tileset)
+            Block(self.block_size, idx, self.pattern_table, self.palette_set, self.tsa_data)
         )
         self.palette_set_update_observable.attach_observer(lambda pal: setattr(widget, "palette_set", pal))
 
         def set_pattern_table(pattern_table: PatternTable):
             widget.pattern_table.pattern_table = pattern_table
-
         self.pattern_table_update_observable.attach_observer(set_pattern_table)
+
+        def set_tsa_data(tsa_data: bytearray):
+            widget.tsa_data = tsa_data
+        self.tsa_data_update_observable.attach_observer(set_tsa_data)
+
+        def set_palette_set(palette_set: PaletteSet):
+            widget.palette_set = palette_set
+        self.palette_set_update_observable.attach_observer(set_palette_set)
 
         return widget
 
@@ -94,6 +106,16 @@ class TileSquareAssemblyDisplayer(QWidget):
     def pattern_table(self, pattern_table: PatternTable) -> None:
         self._pattern_table.pattern_table = pattern_table
         self.pattern_table_update_observable.notify_observers(self.pattern_table.pattern_table)
+
+    @property
+    def tsa_data(self) -> bytearray:
+        return self._tsa_data
+
+    @tsa_data.setter
+    def tsa_data(self, tsa_data: bytearray) -> None:
+        if tsa_data != self.tsa_data:
+            self._tsa_data = tsa_data
+            self.tsa_data_update_observable.notify_observers(tsa_data)
 
     @property
     def tileset(self) -> int:
