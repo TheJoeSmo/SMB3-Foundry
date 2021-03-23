@@ -16,16 +16,18 @@ class BlockTileTracker(BlockTileDisplayer):
     def _create_tile(self, idx: int, tile_idx: int) -> QWidget:
         tile = TrackingTile(
             self,
-            Tile(self.block.size, tile_idx, self.block.pattern_table, self.block.palette_set[tile_idx // 0x40])
+            Tile(self._block.size, tile_idx, self._block.pattern_table, self._block.palette_set[tile_idx // 0x40])
         )
 
         # Push the tile update upstream
 
         def push_tile_to_block(tile_index, i):
-            tile = list(self.block.tiles)
+            tile = list(self._block.tiles)
             tile[i] = tile_index
-            self.block.tiles = tuple(tile)
+            self._block.tiles = tuple(tile)
 
         tile.index_update_observable.attach_observer(lambda tile_index, i=idx: push_tile_to_block(tile_index, i))
+
+        self._attach_observers_to_tile(tile, idx)
 
         return tile
