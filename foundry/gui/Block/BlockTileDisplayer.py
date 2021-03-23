@@ -8,7 +8,7 @@ from foundry.core.Size.Size import Size
 from foundry.core.PatternTable.PatternTable import PatternTable
 from foundry.core.PaletteSet.PaletteSet import PaletteSet
 
-from foundry.gui.Block.AbstractBlock import AbstractBlock
+from foundry.core.Block.AbstractBlock import AbstractBlock
 from foundry.gui.Block.Block import Block
 from foundry.gui.Block.ObservableBlock import ObservableBlock
 from foundry.gui.Tile.Tile import Tile

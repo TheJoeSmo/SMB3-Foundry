@@ -12,7 +12,7 @@ from foundry.core.Position.Position import Position
 from foundry.core.Size.Size import Size
 
 from foundry.gui.Block.ObservableBlock import ObservableBlock
-from foundry.gui.Block.AbstractBlock import AbstractBlock
+from foundry.core.Block.AbstractBlock import AbstractBlock
 
 
 class WidgetBlock(QWidget):

@@ -6,7 +6,7 @@ from PySide2.QtWidgets import QWidget
 
 from foundry.gui.Block.WidgetBlock import WidgetBlock
 from foundry.gui.QWidget.TrackingWidget import TrackingWidget
-from foundry.gui.Block.AbstractBlock import AbstractBlock
+from foundry.core.Block.AbstractBlock import AbstractBlock
 
 
 class TrackingBlock(TrackingWidget, WidgetBlock):

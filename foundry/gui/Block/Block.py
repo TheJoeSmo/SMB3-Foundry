@@ -6,7 +6,7 @@ from foundry.core.PatternTable.PatternTableHandler import PatternTableHandler
 from foundry.core.PaletteSet.PaletteSet import PaletteSet
 from foundry.core.Size.Size import Size
 
-from .AbstractBlock import AbstractBlock
+from foundry.core.Block.AbstractBlock import AbstractBlock
 
 
 class Block(AbstractBlock):

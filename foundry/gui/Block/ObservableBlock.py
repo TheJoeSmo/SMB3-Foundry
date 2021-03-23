@@ -12,7 +12,7 @@ from foundry.core.Size.Size import Size
 
 from foundry.gui.Block.Block import Block
 
-from foundry.gui.Block.AbstractBlock import AbstractBlock
+from foundry.core.Block.AbstractBlock import AbstractBlock
 
 
 class ObservableBlock(AbstractBlock):

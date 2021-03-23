@@ -13,7 +13,7 @@ from foundry.core.Size.Size import Size
 
 from foundry.gui.Block.BlockTileEditor import BlockTileEditor
 from foundry.gui.Block.ObservableBlock import ObservableBlock
-from foundry.gui.Block.AbstractBlock import AbstractBlock
+from foundry.core.Block.AbstractBlock import AbstractBlock
 from foundry.gui.QSpinner.HexSpinner import HexSpinner
 
 
