@@ -1,6 +1,20 @@
 
 
 from typing import List, Optional, Callable
+from functools import reduce
+
+
+def update_observer_setter(observer_name: str):
+    """A setter that will automatically update an observer when set"""
+    from foundry.core.Observables.AbstractObservable import AbstractObservable
+
+    def setter(self, var_name, value, instance):
+        var = var_name.split('.')
+        setattr(reduce(getattr, var[:-1], instance)(), var[-1], value)
+        obs: AbstractObservable = reduce(getattr, observer_name.split('.'), self)()
+        obs.notify_observers(value)
+
+    return setter
 
 
 class Stealer:
@@ -8,11 +22,12 @@ class Stealer:
 
     @staticmethod
     def default_getter(_, var_name, instance):
-        return getattr(instance, var_name)
+        return reduce(getattr, var_name.split('.'), instance)()
 
     @staticmethod
     def default_setter(_, var_name, value, instance):
-        return setattr(instance, var_name, value)
+        var = var_name.split('.')
+        setattr(reduce(getattr, var[:-1], instance)(), var[-1], value)
 
     def __init__(self, ins_var: str, cls_var: str, getter: Optional[Callable] = None, setter: Optional[Callable] = None):
         self.instance_variable = ins_var
@@ -26,41 +41,42 @@ class Stealer:
                f")"
 
 
-def steal_variables_from_class_variable(
-        cls,
+def steal_variables_from_class_variables(
         cls_var: str,
         cls_props: List[Stealer]
 ):
     """
     Set a property from a variable from one of the base class' variables.
 
-    :param cls: The class to add properties to
     :param cls_var: The variable name that we want to steal from
     :param cls_props: The list of variable stealer's
     """
 
-    def get_var_instance(self):
-        """Retrieves the instance of the variable we are wanting to steal"""
-        return getattr(self, cls_var)
+    def steal_variables_inner(cls):
 
-    def getter_wrapper(var_name: str, func: Callable):
-        def getter_(self):
-            return func(self, var_name, get_var_instance(self))
-        return getter_
+        def get_var_instance(self):
+            """Retrieves the instance of the variable we are wanting to steal"""
+            return getattr(self, cls_var)
 
-    def setter_wrapper(var_name: str, func: Callable):
-        def setter_(self, value):
-            func(self, var_name, value, get_var_instance(self))
-        return setter_
+        def getter_wrapper(var_name: str, func: Callable):
+            def getter_(self):
+                return func(self, var_name, get_var_instance(self))
+            return getter_
 
-    for prop in cls_props:
-        setattr(
-            cls,
-            prop.class_variable,
-            property(
-                getter_wrapper(prop.instance_variable, prop.getter_),
-                setter_wrapper(prop.instance_variable, prop.setter_)
+        def setter_wrapper(var_name: str, func: Callable):
+            def setter_(self, value):
+                func(self, var_name, value, get_var_instance(self))
+            return setter_
+
+        for prop in cls_props:
+            setattr(
+                cls,
+                prop.class_variable,
+                property(
+                    getter_wrapper(prop.instance_variable, prop.getter_),
+                    setter_wrapper(prop.instance_variable, prop.setter_)
+                )
             )
-        )
 
-    return cls
+        return cls
+    return steal_variables_inner
