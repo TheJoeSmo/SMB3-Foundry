@@ -21,9 +21,7 @@ from PySide2.QtWidgets import (
     QPushButton,
     QScrollArea,
     QShortcut,
-    QSizePolicy,
     QSplitter,
-    QToolBar,
     QVBoxLayout,
     QWhatsThis,
     QWidget,
@@ -47,7 +45,8 @@ from foundry.game.File import ROM
 from foundry.game.ObjectSet import OBJECT_SET_NAMES
 from foundry.game.gfx.Palette import PaletteGroup, restore_all_palettes, save_all_palette_groups
 from foundry.game.gfx.objects.EnemyItem import EnemyObject
-from foundry.game.gfx.objects.LevelObject import LevelObject
+from foundry.game.gfx.objects.LevelObj.ObjectLikeLevelObjectRendererAdapter \
+    import ObjectLikeLevelObjectRendererAdapter as LevelObject
 from foundry.game.level.Level import Level, world_and_level_for_level_address
 from foundry.game.level.LevelRef import LevelRef
 from foundry.game.level.WorldMap import WorldMap
@@ -71,11 +70,12 @@ from foundry.gui.ObjectViewer import ObjectViewer
 from foundry.gui.PaletteViewer import PaletteViewer, SidePalette
 from foundry.gui.SettingsDialog import POWERUPS, SettingsDialog
 from foundry.gui.SpinnerPanel import SpinnerPanel
-from foundry.gui.WarningList import WarningList
+from foundry.gui.WarningList import ScrollWarningList
 from foundry.gui.settings import SETTINGS, save_settings
 from smb3parse.constants import TILE_LEVEL_1, Title_DebugMenu, Title_PrepForWorldMap
 from smb3parse.levels.world_map import WorldMap as SMB3World
 from smb3parse.util.rom import Rom as SMB3Rom
+from foundry.gui.MovableToolbar import MovableToolbar as QToolBar
 
 ROM_FILE_FILTER = "ROM files (*.nes *.rom);;All files (*)"
 M3L_FILE_FILTER = "M3L files (*.m3l);;All files (*)"
@@ -134,18 +134,9 @@ class MainWindow(QMainWindow):
         self.save_rom_action.triggered.connect(self.on_save_rom)
         self.save_rom_as_action = file_menu.addAction("&Save ROM as ...")
         self.save_rom_as_action.triggered.connect(self.on_save_rom_as)
-        """
-        file_menu.AppendSeparator()
-        """
         self.save_m3l_action = file_menu.addAction("&Save M3L")
         self.save_m3l_action.triggered.connect(self.on_save_m3l)
-        """
-        file_menu.Append(ID_SAVE_LEVEL_TO, "&Save Level to", "")
-        file_menu.AppendSeparator()
-        file_menu.Append(ID_APPLY_IPS_PATCH, "&Apply IPS Patch", "")
-        file_menu.AppendSeparator()
-        file_menu.Append(ID_ROM_PRESET, "&ROM Preset", "")
-        """
+
         file_menu.addSeparator()
         settings_action = file_menu.addAction("&Settings")
         settings_action.triggered.connect(self._on_show_settings)
@@ -154,19 +145,6 @@ class MainWindow(QMainWindow):
         exit_action.triggered.connect(lambda _: self.close())
 
         self.menuBar().addMenu(file_menu)
-
-        """
-        edit_menu = wx.Menu()
-
-        edit_menu.Append(ID_EDIT_LEVEL, "&Edit Level", "")
-        edit_menu.Append(ID_EDIT_OBJ_DEFS, "&Edit Object Definitions", "")
-        edit_menu.Append(ID_EDIT_PALETTE, "&Edit Palette", "")
-        edit_menu.Append(ID_EDIT_GRAPHICS, "&Edit Graphics", "")
-        edit_menu.Append(ID_EDIT_MISC, "&Edit Miscellaneous", "")
-        edit_menu.AppendSeparator()
-        edit_menu.Append(ID_FREE_FORM_MODE, "&Free form Mode", "")
-        edit_menu.Append(ID_LIMIT_SIZE, "&Limit Size", "")
-        """
 
         self.level_menu = QMenu("Level")
 
@@ -252,29 +230,10 @@ class MainWindow(QMainWindow):
 
         self.view_menu.addSeparator()
         self.view_menu.addAction("&Save Screenshot of Level").triggered.connect(self.on_screenshot)
-        """
-        self.view_menu.Append(ID_BACKGROUND_FLOOR, "&Background & Floor", "")
-        self.view_menu.Append(ID_TOOLBAR, "&Toolbar", "")
-        self.view_menu.AppendSeparator()
-        self.view_menu.Append(ID_ZOOM, "&Zoom", "")
-        self.view_menu.AppendSeparator()
-        self.view_menu.Append(ID_USE_ROM_GRAPHICS, "&Use ROM Graphics", "")
-        self.view_menu.Append(ID_PALETTE, "&Palette", "")
-        self.view_menu.AppendSeparator()
-        self.view_menu.Append(ID_MORE, "&More", "")
-        """
 
         self.menuBar().addMenu(self.view_menu)
 
         help_menu = QMenu("Help")
-        """
-        help_menu.Append(ID_ENEMY_COMPATIBILITY, "&Enemy Compatibility", "")
-        help_menu.Append(ID_TROUBLESHOOTING, "&Troubleshooting", "")
-        help_menu.AppendSeparator()
-        help_menu.Append(ID_PROGRAM_WEBSITE, "&Program Website", "")
-        help_menu.Append(ID_MAKE_A_DONATION, "&Make a Donation", "")
-        help_menu.AppendSeparator()
-        """
         update_action = help_menu.addAction("Check for updates")
         update_action.triggered.connect(self.on_check_for_update)
 
@@ -369,10 +328,6 @@ class MainWindow(QMainWindow):
         splitter.setChildrenCollapsible(False)
 
         level_toolbar = QToolBar("Level Info Toolbar", self)
-        level_toolbar.setContextMenuPolicy(Qt.PreventContextMenu)
-        level_toolbar.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
-        level_toolbar.setOrientation(Qt.Horizontal)
-        level_toolbar.setFloatable(False)
 
         level_toolbar.addWidget(self.spinner_panel)
         level_toolbar.addWidget(self.object_dropdown)
@@ -387,9 +342,6 @@ class MainWindow(QMainWindow):
         self.object_toolbar.object_selected.connect(self._on_placeable_object_selected)
 
         object_toolbar = QToolBar("Object Toolbar", self)
-        object_toolbar.setContextMenuPolicy(Qt.PreventContextMenu)
-        object_toolbar.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
-        object_toolbar.setFloatable(False)
 
         object_toolbar.addWidget(self.object_toolbar)
         object_toolbar.setAllowedAreas(Qt.LeftToolBarArea | Qt.RightToolBarArea)
@@ -397,7 +349,6 @@ class MainWindow(QMainWindow):
         self.addToolBar(Qt.LeftToolBarArea, object_toolbar)
 
         self.menu_toolbar = QToolBar("Menu Toolbar", self)
-        self.menu_toolbar.setOrientation(Qt.Horizontal)
         self.menu_toolbar.setIconSize(QSize(20, 20))
 
         self.menu_toolbar.addAction(icon("settings.svg"), "Editor Settings").triggered.connect(self._on_show_settings)
@@ -447,14 +398,15 @@ class MainWindow(QMainWindow):
         self.menu_toolbar.addAction(whats_this_action)
 
         self.menu_toolbar.addSeparator()
-        self.warning_list = WarningList(self, self.level_ref, self.level_view, self.object_list)
+        self.warning_list = ScrollWarningList(self, self.level_ref, self.level_view, self.object_list)
+        self.warning_list.hide()
 
         warning_action = self.menu_toolbar.addAction(icon("alert-triangle.svg"), "Warning Panel")
         warning_action.setWhatsThis("Shows a list of warnings.")
         warning_action.triggered.connect(self.warning_list.show)
         warning_action.setDisabled(True)
 
-        self.warning_list.warnings_updated.connect(warning_action.setEnabled)
+        self.warning_list.warning_list.warnings_updated.connect(warning_action.setEnabled)
 
         self.addToolBar(Qt.TopToolBarArea, self.menu_toolbar)
 
