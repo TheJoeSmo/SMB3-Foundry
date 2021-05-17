@@ -2,7 +2,7 @@ from itertools import product
 from typing import Callable
 
 from PySide2.QtCore import QSize, Signal, SignalInstance
-from PySide2.QtGui import QColor, QMouseEvent, QPixmap, Qt
+from PySide2.QtGui import QColor, QMouseEvent, QPixmap, Qt, QKeySequence
 from PySide2.QtWidgets import (
     QAbstractButton,
     QDialog,
@@ -14,6 +14,7 @@ from PySide2.QtWidgets import (
     QSizePolicy,
     QVBoxLayout,
     QWidget,
+    QShortcut,
 )
 
 from foundry.game.gfx.Palette import (
@@ -27,6 +28,7 @@ from foundry.game.gfx.Palette import (
 from foundry.game.level.LevelRef import LevelRef
 from foundry.gui.CustomDialog import CustomDialog
 from foundry.gui.util import clear_layout
+from foundry.core.UndoRedo.UndoRedo import UndoRedo
 
 
 class PaletteViewer(CustomDialog):
@@ -214,11 +216,16 @@ class SidePalette(QWidget):
         super(SidePalette, self).__init__()
 
         self.level_ref = level_ref
-
+        self.undo_redo = UndoRedo(lambda state: self.undo_redo_update(state))
+        self.updating_undo_redo = False
         self.level_ref.data_changed.connect(self.update)
-
+        self.palette_group = None
+        self.widgets = []
         self.setLayout(QVBoxLayout(self))
         self.layout().setSpacing(0)
+
+        QShortcut(QKeySequence(Qt.CTRL + Qt.Key_P, Qt.CTRL + Qt.Key_Z), self, lambda *_: self.undo_redo.safe_undo())
+        QShortcut(QKeySequence(Qt.CTRL + Qt.Key_P, Qt.CTRL + Qt.Key_Y), self, lambda *_: self.undo_redo.safe_redo())
 
         self.setWhatsThis(
             "<b>Object Palettes</b><br/>"
@@ -229,31 +236,51 @@ class SidePalette(QWidget):
             "Note: The first color (the left most one) is always the same among all 4 palettes."
         )
 
+    def undo_redo_update(self, state):
+        self.updating_undo_redo = True
+
+        for pal_idx, pal in enumerate(state):
+            for col_idx, color in enumerate(pal):
+                self.palette_group[pal_idx][col_idx] = color
+        self.update()
+        self.updating_undo_redo = False
+
+        PaletteGroup.changed = True
+        self.level_ref.reload()
+
     def update(self):
         clear_layout(self.layout())
 
         palette_group_index = self.level_ref.object_palette_index
         palette_group = load_palette_group(self.level_ref.object_set_number, palette_group_index)
 
+        if self.palette_group is None or self.palette_group != palette_group:
+            self.palette_group = palette_group
+            self.undo_redo.clear(tuple([bytes(pal) for pal in self.palette_group.palettes]))
+
+        self.palettes = []
         for palette_no in range(PALETTES_PER_PALETTES_GROUP):
-            widget = PaletteWidget(palette_group, palette_no)
-            widget.color_changed.connect(self.color_changer(palette_group, palette_no))
+            widget = PaletteWidget(self.palette_group, palette_no)
+            widget.color_changed.connect(self.color_changer(palette_no))
             widget.clickable = True
 
+            self.palettes.append(widget)
             self.layout().addWidget(widget)
 
-    def color_changer(self, palette_group: PaletteGroup, palette_no: int) -> Callable:
+    def color_changer(self, palette_no: int) -> Callable:
         def actual_changer(index_in_palette, index_in_nes_color_table):
-            if palette_group[palette_no][index_in_palette] == index_in_nes_color_table:
+            if self.palette_group[palette_no][index_in_palette] == index_in_nes_color_table:
                 return
 
             # colors at index 0 are shared among all palettes of a palette group
             if index_in_palette == 0:
-                for palette in palette_group.palettes:
+                for palette in self.palette_group.palettes:
                     palette[0] = index_in_nes_color_table
             else:
-                palette_group[palette_no][index_in_palette] = index_in_nes_color_table
+                self.palette_group[palette_no][index_in_palette] = index_in_nes_color_table
 
+            if not self.updating_undo_redo:
+                self.undo_redo.append(tuple([bytes(pal) for pal in self.palette_group.palettes]))
             PaletteGroup.changed = True
 
             self.level_ref.reload()
