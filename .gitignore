@@ -3,6 +3,7 @@ venv
 .hypothesis
 .coverage
 .idea
+.vscode
 .mypy_cache
 *.nes
 __pycache__
