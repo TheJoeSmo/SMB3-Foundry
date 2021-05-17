@@ -5,6 +5,7 @@ venv
 .idea
 .vscode
 .mypy_cache
+.vscode
 *.nes
 __pycache__
 build/
