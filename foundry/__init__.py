@@ -13,6 +13,7 @@ home_dir = Path.home() / ".smb3foundry"
 home_dir.mkdir(parents=True, exist_ok=True)
 
 default_settings_path = home_dir / "settings"
+default_database_path = home_dir / "foundry.db"
 
 auto_save_path = home_dir / "auto_save"
 auto_save_path.mkdir(parents=True, exist_ok=True)
