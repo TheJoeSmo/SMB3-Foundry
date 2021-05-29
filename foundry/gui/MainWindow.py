@@ -22,6 +22,7 @@ from PySide2.QtWidgets import (
     QScrollArea,
     QShortcut,
     QSplitter,
+    QToolBar,
     QVBoxLayout,
     QWhatsThis,
     QWidget,

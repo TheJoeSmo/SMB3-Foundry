@@ -285,4 +285,4 @@ class SidePalette(QWidget):
 
             self.level_ref.reload()
 
-        return actual_changer
+        self.close()
