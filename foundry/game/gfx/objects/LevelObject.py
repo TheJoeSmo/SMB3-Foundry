@@ -12,6 +12,7 @@ from foundry.game.gfx.Palette import PaletteGroup, bg_color_for_object_set
 from foundry.game.gfx.drawable.Block import Block, get_block
 from foundry.game.gfx.objects.EnemyItem import EnemyObject
 from foundry.game.gfx.objects.ObjectLike import EXPANDS_BOTH, EXPANDS_HORIZ, EXPANDS_NOT, EXPANDS_VERT, ObjectLike
+from foundry.gui.tsa_data import get_tsa_data
 from smb3parse.objects.object_set import PLAINS_OBJECT_SET
 
 SKY = 0
@@ -95,7 +96,6 @@ class LevelObject(ObjectLike):
         self.object_set = ObjectSet(object_set)
 
         self.graphics_set = graphics_set
-        self.tsa_data = ROM.get_tsa_data(object_set)
 
         self.x_position = 0
         self.y_position = 0
@@ -159,8 +159,6 @@ class LevelObject(ObjectLike):
         self.name = object_data.description
 
         self.blocks = [int(block) for block in object_data.rom_object_design]
-
-        self.block_cache = {}
 
         self.is_4byte = object_data.is_4byte
 
@@ -730,10 +728,9 @@ class LevelObject(ObjectLike):
             self._draw_block(painter, block_index, x, y, block_length, transparent)
 
     def _draw_block(self, painter: QPainter, block_index, x, y, block_length, transparent):
-        if block_index not in self.block_cache:
-            self.block_cache[block_index] = get_block(block_index, self.palette_group, self.graphics_set, self.tsa_data)
+        block = get_block(block_index, self.palette_group, self.graphics_set, get_tsa_data(self.object_set.number))
 
-        self.block_cache[block_index].draw(
+        block.draw(
             painter,
             x * block_length,
             y * block_length,

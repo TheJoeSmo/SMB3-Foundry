@@ -1,6 +1,7 @@
 from functools import lru_cache
 
-from PySide2.QtGui import QImage
+from PySide2.QtCore import QPoint
+from PySide2.QtGui import QImage, QColor, QImage, QPainter, Qt
 
 from foundry.game.gfx.GraphicsSet import GraphicsSet
 from foundry.game.gfx.Palette import NESPalette, PaletteGroup
@@ -46,6 +47,8 @@ class Tile:
         else:
             self.background_color_index = 0
 
+        self.bg_color = NESPalette[palette_group[palette_index][self.background_color_index]]
+
         if mirrored:
             self._mirror()
 
@@ -84,6 +87,30 @@ class Tile:
             self.cached_tiles[tile_length] = image
 
         return self.cached_tiles[tile_length]
+
+    def _replace_transparent_with_background(self, image):
+        # draw image on background layer, to fill transparent pixels
+        background = image.copy()
+        background.fill(self.bg_color)
+
+        _painter = QPainter(background)
+        _painter.drawImage(QPoint(), image)
+        _painter.end()
+
+        return background
+
+    def draw(self, painter: QPainter, x, y, tile_length, transparent=False):
+        if tile_length != Tile.WIDTH:
+            image = self.as_image(tile_length)
+
+        # mask out the transparent pixels first
+        mask = image.createMaskFromColor(QColor(*MASK_COLOR).rgb(), Qt.MaskOutColor)
+        image.setAlphaChannel(mask)
+
+        if not transparent:  # or self._whole_block_is_transparent:
+            image = self._replace_transparent_with_background(image)
+
+        painter.drawImage(x, y, image)
 
     def _mirror(self):
         for byte in range(len(self.data)):

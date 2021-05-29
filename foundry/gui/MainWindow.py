@@ -45,6 +45,7 @@ from foundry import (
 )
 from foundry.game.File import ROM
 from foundry.game.ObjectSet import OBJECT_SET_NAMES
+from foundry.game.gfx.drawable.Block import clear_block_cache
 from foundry.game.gfx.Palette import PaletteGroup, restore_all_palettes, save_all_palette_groups
 from foundry.game.gfx.objects.EnemyItem import EnemyObject
 from foundry.game.gfx.objects.LevelObject import LevelObject
@@ -76,6 +77,7 @@ from foundry.gui.settings import SETTINGS, save_settings
 from smb3parse.constants import TILE_LEVEL_1, Title_DebugMenu, Title_PrepForWorldMap
 from smb3parse.levels.world_map import WorldMap as SMB3World
 from smb3parse.util.rom import Rom as SMB3Rom
+from foundry.gui.tsa_data import import_tsa_data, export_tsa_data, initialize, get_controller
 
 ROM_FILE_FILTER = "ROM files (*.nes *.rom);;All files (*)"
 M3L_FILE_FILTER = "M3L files (*.m3l);;All files (*)"
@@ -146,6 +148,16 @@ class MainWindow(QMainWindow):
         file_menu.AppendSeparator()
         file_menu.Append(ID_ROM_PRESET, "&ROM Preset", "")
         """
+        file_menu.addSeparator()
+
+        self.import_tsa_action = file_menu.addAction("&Import TSA")
+        self.import_tsa_action.triggered.connect(lambda *_, s=self: import_tsa_data(s))
+        self.import_tsa_action.triggered.connect(lambda *_: self.level_ref.reload())
+        self.import_tsa_action.triggered.connect(lambda *_: clear_block_cache())
+
+        self.export_tsa_action = file_menu.addAction("&Export TSA")
+        self.export_tsa_action.triggered.connect(lambda *_, s=self: export_tsa_data(s))
+
         file_menu.addSeparator()
         settings_action = file_menu.addAction("&Settings")
         settings_action.triggered.connect(self._on_show_settings)
@@ -768,6 +780,13 @@ class MainWindow(QMainWindow):
         try:
             ROM.load_from_file(path_to_rom)
 
+            controller = get_controller()
+            if controller is None:
+                initialize(self, str(ROM.path))
+            else:
+                controller.load_new_rom(path_to_rom)
+                clear_block_cache()
+
             if path_to_rom == auto_save_rom_path:
                 self._load_auto_save()
             else:
@@ -965,6 +984,8 @@ class MainWindow(QMainWindow):
             self.level_ref.data_changed.emit()
 
     def _save_current_changes_to_file(self, pathname: str, set_new_path):
+        get_controller().save()  # Tell the TSA database to save
+
         for offset, data in self.level_ref.to_bytes():
             ROM().bulk_write(data, offset)
 
@@ -1217,7 +1238,7 @@ class MainWindow(QMainWindow):
 
     def on_block_viewer(self, _):
         if self.block_viewer is None:
-            self.block_viewer = BlockViewer(parent=self)
+            self.block_viewer = BlockViewer(parent=self, level_ref=self.level_ref)
 
         if self.level_ref.level is not None:
             self.block_viewer.object_set = self.level_ref.object_set.number

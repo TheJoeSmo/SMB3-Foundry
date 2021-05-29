@@ -15,6 +15,7 @@ from foundry.game.gfx.objects.LevelObject import GROUND, SCREEN_HEIGHT, SCREEN_W
 from foundry.game.gfx.objects.ObjectLike import EXPANDS_BOTH, EXPANDS_HORIZ, EXPANDS_VERT
 from foundry.game.level.Level import Level
 from foundry.gui.AutoScrollDrawer import AutoScrollDrawer
+from foundry.gui.tsa_data import get_tsa_data
 from smb3parse.constants import OBJ_AUTOSCROLL
 from smb3parse.levels import LEVEL_MAX_LENGTH
 from smb3parse.objects.object_set import CLOUDY_OBJECT_SET, DESERT_OBJECT_SET, DUNGEON_OBJECT_SET, ICE_OBJECT_SET
@@ -85,7 +86,7 @@ def _block_from_index(block_index: int, level: Level) -> Block:
 
     palette_group = load_palette_group(level.object_set_number, level.header.object_palette_index)
     graphics_set = GraphicsSet(level.header.graphic_set_index)
-    tsa_data = ROM().get_tsa_data(level.object_set_number)
+    tsa_data = get_tsa_data(level.object_set_number)
 
     return Block(block_index, palette_group, graphics_set, tsa_data)
 
