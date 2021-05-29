@@ -83,6 +83,8 @@ class GraphicsSet:
 
         self._read_in(segments)
 
+        self.segments = segments
+
     def _read_in(self, segments):
         for segment in segments:
             self._read_in_chr_rom_segment(segment)

@@ -5,7 +5,11 @@ block_cipher = None
 
 a = Analysis(['smb3-foundry.py'],
              binaries=[],
-             datas=[('data', 'data'), ('VERSION', '.')],
+             datas=[
+                 ('data', 'data'), 
+                 ('VERSION', '.'), 
+                 ('foundry/core/TileSquareAssembly/recources', 'foundry/core/TileSquareAssembly/recources')
+             ],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
