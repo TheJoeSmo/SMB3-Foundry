@@ -6,6 +6,7 @@ from foundry.game.gfx.GraphicsSet import GraphicsSet
 from foundry.game.gfx.drawable.Block import Block
 from foundry.game.gfx.objects.MapObject import MapObject
 from foundry.game.level.LevelLike import LevelLike
+from foundry.gui.tsa_data import get_tsa_data
 from smb3parse.levels.world_map import (
     WORLD_MAP_HEIGHT,
     WORLD_MAP_SCREEN_SIZE,
@@ -29,7 +30,7 @@ class WorldMap(LevelLike):
         self.palette_group = load_palette_group(WORLD_MAP_OBJECT_SET, 0)
 
         self.object_set = WORLD_MAP_OBJECT_SET
-        self.tsa_data = ROM.get_tsa_data(self.object_set)
+        self.tsa_data = get_tsa_data(0)
 
         self.world = 0
         self.level_number = world_index
