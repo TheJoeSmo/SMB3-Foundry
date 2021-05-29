@@ -60,6 +60,10 @@ class ROM(Rom):
         return bytes(rom.read(tsa_start, TSA_TABLE_SIZE))
 
     @staticmethod
+    def reload():
+        ROM.load_from_file(ROM.path)
+
+    @staticmethod
     def load_from_file(path: str):
         with open(path, "rb") as rom:
             data = bytearray(rom.read())

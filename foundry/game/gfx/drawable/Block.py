@@ -1,5 +1,3 @@
-from functools import lru_cache
-
 from PySide2.QtCore import QPoint
 from PySide2.QtGui import QColor, QImage, QPainter, Qt
 
@@ -16,15 +14,16 @@ TSA_BANK_2 = 2 * 256
 TSA_BANK_3 = 3 * 256
 
 
-@lru_cache(2 ** 10)
+def clear_block_cache():
+    Block._block_cache = {}
+
+
 def get_block(block_index: int, palette_group: PaletteGroup, graphics_set: GraphicsSet, tsa_data: bytes):
     if block_index > 0xFF:
         rom_block_index = ROM().get_byte(block_index)  # block_index is an offset into the graphic memory
-        block = Block(rom_block_index, palette_group, graphics_set, tsa_data)
+        return Block(rom_block_index, palette_group, graphics_set, tsa_data)
     else:
-        block = Block(block_index, palette_group, graphics_set, tsa_data)
-
-    return block
+        return Block(block_index, palette_group, graphics_set, tsa_data)
 
 
 class Block:
