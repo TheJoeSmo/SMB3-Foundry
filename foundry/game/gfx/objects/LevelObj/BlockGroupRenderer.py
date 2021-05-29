@@ -4,10 +4,11 @@ from itertools import product
 from PySide2.QtCore import QSize
 from PySide2.QtGui import QImage, QPainter
 
-from foundry.game.File import ROM
 from foundry.game.gfx.GraphicsSet import GraphicsSet
 from foundry.game.gfx.Palette import PaletteGroup, bg_color_for_object_set
 from foundry.game.gfx.drawable.Block import Block, get_block
+
+from foundry.gui.tsa_data import get_tsa_data
 
 
 # todo: Create tests for BlockGroupRenderer
@@ -51,7 +52,6 @@ class BlockGroupRenderer:
     @object_set_index.setter
     def object_set_index(self, idx: int) -> None:
         self._object_set_index = idx
-        self.tsa_data = ROM.get_tsa_data(idx)
 
     @property
     def x(self) -> int:
@@ -144,7 +144,9 @@ class BlockGroupRenderer:
 
     def _draw_block(self, painter: QPainter, block_index, x, y, block_length, transparent):
         if block_index not in self.block_cache:
-            self.block_cache[block_index] = get_block(block_index, self.palette_group, self.graphics_set, self.tsa_data)
+            self.block_cache[block_index] = get_block(
+                block_index, self.palette_group, self.graphics_set, get_tsa_data(self.object_set_index)
+            )
 
         self.block_cache[block_index].draw(
             painter,
