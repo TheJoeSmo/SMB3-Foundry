@@ -20,7 +20,7 @@ class Address:
         return f"{self.__class__.__name__}({self.data})"
 
     def __copy__(self):
-        return self.__class__.from_data(self.name, copu(self.container), self.container_offset)
+        return self.__class__.from_data(self.name, copy(self.container), self.container_offset)
 
     @classmethod
     @require_a_transaction
