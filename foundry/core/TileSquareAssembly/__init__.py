@@ -8,9 +8,9 @@ from smb3parse.constants import BASE_OFFSET, PAGE_A000_ByTileset, WORLD_MAP_TSA_
 from foundry.core.Cursor.Cursor import Connection
 
 
-root_dir = Path(__file__).parent.parent / "TileSquareAssembly" / "recources"
+root_dir = Path(__file__).parent.parent / "recources"
 
-create_tsa_database = root_dir / "create_tsa_database.sql"
+create_tsa_database = root_dir / "create_database.sql"
 
 
 def load_or_create_database():
