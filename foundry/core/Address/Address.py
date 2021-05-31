@@ -1,4 +1,5 @@
 from typing import Optional, Tuple
+from copy import copy
 
 from foundry.core.Cursor.Cursor import Cursor, require_a_transaction
 from foundry.core.Container.Container import Container
@@ -19,7 +20,7 @@ class Address:
         return f"{self.__class__.__name__}({self.data})"
 
     def __copy__(self):
-        return self.__class__.from_data(self.name, self.container, self.container_offset)
+        return self.__class__.from_data(self.name, copu(self.container), self.container_offset)
 
     @classmethod
     @require_a_transaction
@@ -41,8 +42,8 @@ class Address:
         return self.container.size > self.container_offset
 
     @property
-    def amount_outside_container(self) -> int:
-        return self.container_offset - self.container.size
+    def space_remaining(self) -> int:
+        return self.container.size - self.container_offset
 
     @property
     def rom_offset(self) -> int:
