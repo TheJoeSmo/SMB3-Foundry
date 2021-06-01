@@ -41,7 +41,7 @@ class Filler:
 
     @property
     def space_remaining(self) -> int:
-        return self.container.size - self.container_offset - self.size
+        return self.address.container.size - self.container_offset - self.size
 
     @property
     def start_rom_offset(self) -> int:
@@ -82,6 +82,21 @@ class Filler:
     @container_offset.setter
     def container_offset(self, container_offset: int):
         self.address.container_offset = container_offset
+
+    @property
+    def address(self) -> Address:
+        with Cursor() as c:
+            return Address(
+                c.execute("SELECT AddressID FROM Fillers WHERE FillerID = ?", (self.filler_id,)).fetchone()[0]
+            )
+
+    @address.setter
+    @require_a_transaction
+    def address(self, address: Address, **kwargs):
+        transaction = kwargs["transaction"]
+        transaction.connection.execute(
+            "UPDATE Fillers SET AddressID = ? WHERE FillerID = ?", (address.address_id, self.filler_id)
+        )
 
     @property
     def size(self) -> int:
