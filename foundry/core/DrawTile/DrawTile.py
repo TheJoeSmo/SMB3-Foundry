@@ -1,18 +1,4 @@
-from typing import List
-
 from foundry.core.Cursor.Cursor import Cursor, require_a_transaction
-
-
-@require_a_transaction
-def create_draw_tiles_for_draw_event(draw_event, tiles: List[int], **kwargs):
-    """
-    An optimized way to create the draw tiles.  It starts a transaction, which is much faster in SQLite.
-    """
-    transaction = kwargs["transaction"]
-    transaction.connection.executemany(
-        "INSERT INTO DrawTiles (EventIndex, DrawEventID, Tile) VALUES (?, ?, ?)",
-        [(index, draw_event.draw_event_id, tile) for index, tile in enumerate(tiles)],
-    )
 
 
 class DrawTile:
