@@ -98,8 +98,8 @@ CREATE TABLE IF NOT EXISTS ROMDrawUpdates (
 );
 
 CREATE TABLE IF NOT EXISTS DrawUpdateEvents (
-    DrawUpdateID INTEGER NOT NULL REFERENCES DrawUpdates(DrawUpdateID) ON DELETE CASCADE,
     UpdateIndex INTEGER NOT NULL,
+    DrawUpdateID INTEGER NOT NULL REFERENCES DrawUpdates(DrawUpdateID) ON DELETE CASCADE,
     DrawEventID INTEGER NOT NULL REFERENCES DrawEvents(DrawEventID) ON DELETE CASCADE,
-    PRIMARY KEY (DrawUpdateID, UpdateIndex)
+    PRIMARY KEY (UpdateIndex, DrawUpdateID)
 );
