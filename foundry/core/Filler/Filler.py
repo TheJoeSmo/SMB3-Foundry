@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Callable
 from copy import copy
 
 from foundry.core.Cursor.Cursor import Cursor, require_a_transaction
@@ -108,3 +108,6 @@ class Filler:
     def size(self, size: int, **kwargs):
         transaction = kwargs["transaction"]
         transaction.connection.execute("UPDATE Fillers SET Size = ? WHERE FillerID = ?", (size, self.filler_id))
+
+    def to_bytes(self) -> bytes:
+        return bytes(self.size)  # Fill in 0s by default
