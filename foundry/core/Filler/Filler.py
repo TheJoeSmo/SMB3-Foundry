@@ -1,5 +1,5 @@
-from typing import Tuple, Callable
-from copy import copy
+from typing import Tuple
+from copy import deepcopy
 
 from foundry.core.Cursor.Cursor import Cursor, require_a_transaction
 
@@ -20,8 +20,14 @@ class Filler:
     def __str__(self) -> str:
         return f"{self.__class__.__name__}({self.data})"
 
+    def __bytes__(self) -> bytes:
+        return bytes(self.size)  # Fill in 0s by default
+
     def __copy__(self):
-        return self.__class__.from_data(copy(self.address), self.size)
+        return self.__class__.from_data(self.address, self.size)
+
+    def __deepcopy__(self):
+        return self.__class__.from_data(deepcopy(self.address), self.size)
 
     @classmethod
     @require_a_transaction
@@ -108,6 +114,3 @@ class Filler:
     def size(self, size: int, **kwargs):
         transaction = kwargs["transaction"]
         transaction.connection.execute("UPDATE Fillers SET Size = ? WHERE FillerID = ?", (size, self.filler_id))
-
-    def to_bytes(self) -> bytes:
-        return bytes(self.size)  # Fill in 0s by default
