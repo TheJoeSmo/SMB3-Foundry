@@ -1,5 +1,5 @@
 from typing import Optional, Tuple, List
-from copy import copy
+from copy import deepcopy
 
 from foundry.core.Cursor.Cursor import Cursor, require_a_transaction
 
@@ -19,8 +19,11 @@ class Container:
         return f"{self.__class__.__name__}({self.data})"
 
     def __copy__(self):
+        return self.__class__.from_data(self.name, self.rom_offset, self.pc_offset, self.size, self.children)
+
+    def __deepcopy__(self):
         return self.__class__.from_data(
-            self.name, self.rom_offset, self.pc_offset, self.size, [copy(child) for child in self.children]
+            self.name, self.rom_offset, self.pc_offset, self.size, [deepcopy(child) for child in self.children]
         )
 
     @classmethod
