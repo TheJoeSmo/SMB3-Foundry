@@ -18,7 +18,21 @@ class DrawEvent:
     def __str__(self) -> str:
         return f"{self.__class__.__name__}({self.data})"
 
+    def __bytes__(self) -> bytes:
+        b = bytearray()
+        address = self.ppu_address
+
+        b.append((address & 0xFF00) >> 8)
+        b.append(address & 0xFF)
+        b.append(self.is_horizontal << 7 + self.repeats << 6 + self.tile_count)
+        b.extend(self.tiles)
+
+        return bytes(b)
+
     def __copy__(self):
+        return self.__class__.from_data(self.ppu_address, self.is_horizontal, self.repeats, self.tile_count, self.tiles)
+
+    def __deepcopy__(self):
         return self.__class__.from_data(
             self.ppu_address, self.is_horizontal, self.repeats, self.tile_count, [copy(tile) for tile in self.tiles]
         )
@@ -136,14 +150,3 @@ class DrawEvent:
         self.tile_count = len(tiles)
         for idx, tile in enumerate(tiles):
             DrawTile.from_data(self, idx, tile)
-
-    def to_bytes(self) -> bytes:
-        b = bytearray()
-        address = self.ppu_address
-
-        b.append((address & 0xFF00) >> 8)
-        b.append(address & 0xFF)
-        b.append(self.is_horizontal << 7 + self.repeats << 6 + self.tile_count)
-        b.extend(self.tiles)
-
-        return bytes(b)

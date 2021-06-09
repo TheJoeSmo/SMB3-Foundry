@@ -1,4 +1,5 @@
 from typing import List, Tuple
+from copy import deepcopy
 
 from foundry.core.Cursor.Cursor import Cursor, require_a_transaction
 from foundry.core.Filler.Filler import Filler
@@ -20,8 +21,25 @@ class DrawUpdate:
     def __str__(self) -> str:
         return f"{self.__class__.__name__}({self.data})"
 
+    def __bytes__(self) -> bytes:
+        b = bytearray()
+        for event in self.events:
+            b + bytes(event)
+        b.append(0x00)  # Denotes the end of the update inside the ROM
+
+        return bytes(b)
+
     def __copy__(self):
         return self.__class__.from_data(self.name, self.filler, self.mirror, self.pattern_tables, self.events)
+
+    def __deepcopy__(self):
+        return self.__class__.from_data(
+            self.name,
+            deepcopy(self.filler),
+            self.mirror,
+            self.pattern_tables,
+            [deepcopy(event) for event in self.events],
+        )
 
     @classmethod
     @require_a_transaction
@@ -137,11 +155,3 @@ class DrawUpdate:
 
         for idx, event in enumerate(events):
             DrawUpdateEvent.from_data(self, idx, event)
-
-    def to_bytes(self) -> bytes:
-        b = bytearray()
-        for event in self.events:
-            b + event.to_bytes()
-        b.append(0x00)  # Denotes the end of the update inside the ROM
-
-        return bytes(b)
