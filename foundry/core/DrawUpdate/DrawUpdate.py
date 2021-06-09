@@ -1,5 +1,4 @@
 from typing import List, Tuple
-from copy import copy
 
 from foundry.core.Cursor.Cursor import Cursor, require_a_transaction
 from foundry.core.Filler.Filler import Filler
