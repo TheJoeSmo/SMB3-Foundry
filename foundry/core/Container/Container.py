@@ -1,4 +1,4 @@
-from typing import Optional, Tuple
+from typing import Optional, Tuple, List
 
 from foundry.core.Cursor.Cursor import Cursor, require_a_transaction
 
@@ -90,3 +90,41 @@ class Container:
         transaction.connection.execute(
             "UPDATE Containers SET Size = ? WHERE ContainersID = ?", (size, self.container_id)
         )
+
+    @property
+    def children(self):
+        with Cursor() as c:
+            return [
+                Container(container[0])
+                for container in c.execute(
+                    "SELECT ChildCID FROM ContainerContainers WHERE ParentCID = ?", (self.container_id,)
+                ).fetchall()
+            ]
+
+    @children.setter
+    @require_a_transaction
+    def children(self, children: List, **kwargs):
+        self.remove_children()
+        for child in children:
+            self.add_child(child)
+
+    @require_a_transaction
+    def add_child(self, child, **kwargs):
+        transaction = kwargs["transaction"]
+        transaction.connection.execute(
+            "INSERT INTO ContainerContainers (ParentCID, ChildCID) VALUES (?, ?)",
+            (self.container_id, child.container_id),
+        )
+
+    @require_a_transaction
+    def remove_child(self, child, **kwargs):
+        transaction = kwargs["transaction"]
+        transaction.connection.execute(
+            "DELETE FROM ContainerContainers WHERE ParentCID = ? AND ChildCID = ?",
+            (self.container_id, child.container_id),
+        )
+
+    @require_a_transaction
+    def remove_children(self, **kwargs):
+        for child in self.children:
+            self.remove_child(child)
