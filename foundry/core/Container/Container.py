@@ -1,4 +1,5 @@
 from typing import Optional, Tuple, List
+from copy import copy
 
 from foundry.core.Cursor.Cursor import Cursor, require_a_transaction
 
@@ -18,18 +19,25 @@ class Container:
         return f"{self.__class__.__name__}({self.data})"
 
     def __copy__(self):
-        return self.__class__.from_data(self.name, self.rom_offset, self.pc_offset, self.size)
+        return self.__class__.from_data(
+            self.name, self.rom_offset, self.pc_offset, self.size, [copy(child) for child in self.children]
+        )
 
     @classmethod
     @require_a_transaction
-    def from_data(cls, name: Optional[str], rom_offset: int, pc_offset: int, size: int, **kwargs):
+    def from_data(
+        cls, name: Optional[str], rom_offset: int, pc_offset: int, size: int, children: Optional[List], **kwargs
+    ):
         transaction = kwargs["transaction"]
         c = transaction.cursor
         c.execute(
             "INSERT INTO Containers (Name, ROMOffset, PCOffset, Size) VALUES (?, ?, ?, ?)",
             (name, rom_offset, pc_offset, size),
         )
-        return cls(c.lastrowid)
+        self = cls(c.lastrowid)
+        if children is not None:
+            self.children = children
+        return self
 
     @property
     def data(self) -> Tuple[str, int, int, int]:
