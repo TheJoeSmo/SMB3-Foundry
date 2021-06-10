@@ -2,10 +2,12 @@ from typing import Optional, Tuple
 from copy import deepcopy
 
 from foundry.core.Cursor.Cursor import Cursor, require_a_transaction
-from foundry.core.Container.Container import Container
+
+from .AbstractAddress import AbstractAddress
+from ..Container.Container import Container
 
 
-class Address:
+class Address(AbstractAddress):
     """
     A representation of an index inside a container, wrapping the SQLite backend.
     """
@@ -39,30 +41,6 @@ class Address:
     @property
     def data(self) -> Tuple[str, Container, int]:
         return self.name, self.container, self.container_offset
-
-    @property
-    def inside_container(self) -> bool:
-        return self.container.size > self.container_offset
-
-    @property
-    def space_remaining(self) -> int:
-        return self.container.size - self.container_offset
-
-    @property
-    def rom_offset(self) -> int:
-        return self.container.rom_offset + self.container_offset
-
-    @rom_offset.setter
-    def rom_offset(self, rom_offset: int):
-        self.container_offset = rom_offset - self.container.rom_offset
-
-    @property
-    def pc_offset(self) -> int:
-        return self.container.pc_offset + self.container_offset
-
-    @pc_offset.setter
-    def pc_offset(self, pc_offset: int):
-        self.container_offset = pc_offset - self.container.pc_offset
 
     @property
     def name(self) -> str:
