@@ -24,7 +24,7 @@ class DrawUpdate:
     def __bytes__(self) -> bytes:
         b = bytearray()
         for event in self.events:
-            b + bytes(event)
+            b += bytes(event)
         b.append(0x00)  # Denotes the end of the update inside the ROM
 
         return bytes(b)
