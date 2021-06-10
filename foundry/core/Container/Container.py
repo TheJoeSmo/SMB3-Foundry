@@ -3,8 +3,10 @@ from copy import deepcopy
 
 from foundry.core.Cursor.Cursor import Cursor, require_a_transaction
 
+from .AbstractContainer import AbstractContainer
 
-class Container:
+
+class Container(AbstractContainer):
     """
     A representation of a segment of data, wrapping the SQLite backend.
     """
@@ -21,7 +23,7 @@ class Container:
     def __copy__(self):
         return self.__class__.from_data(self.name, self.rom_offset, self.pc_offset, self.size, self.children)
 
-    def __deepcopy__(self):
+    def __deepcopy__(self, memo):
         return self.__class__.from_data(
             self.name, self.rom_offset, self.pc_offset, self.size, [deepcopy(child) for child in self.children]
         )
@@ -134,8 +136,3 @@ class Container:
             "DELETE FROM ContainerContainers WHERE ParentCID = ? AND ChildCID = ?",
             (self.container_id, child.container_id),
         )
-
-    @require_a_transaction
-    def remove_children(self, **kwargs):
-        for child in self.children:
-            self.remove_child(child)

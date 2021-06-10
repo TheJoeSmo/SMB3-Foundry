@@ -2,26 +2,15 @@ from typing import List
 
 from foundry.core.Cursor.Cursor import Cursor
 
+from .AbstractContainerManager import AbstractContainerManager
 from .Container import Container
 from ..Filler.Filler import Filler
 
 
-class ContainerManager(Container):
-    def __bytes__(self) -> bytes:
-        if not self.safe_to_save:
-
-            def filler_can_save(filler: Filler) -> bool:
-                return filler.inside_container
-
-            raise IndexError(
-                f"{list(filter(filler_can_save, self.fillers))} cannot be saved to bytes because they are not inside {self}"
-            )
-
-        b = bytearray(self.size)  # Fill in 0s by default
-        for filler in self.fillers:
-            b[filler.container_offset : filler.container_offset + filler.size] = bytes(filler)
-
-        return bytes(b)
+class ContainerManager(Container, AbstractContainerManager):
+    @staticmethod
+    def filler_safe_to_save(filler: Filler) -> bool:
+        return filler.inside_container
 
     @property
     def safe_to_save(self) -> bool:
