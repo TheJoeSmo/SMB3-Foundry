@@ -1,116 +1,52 @@
-from typing import Tuple
-from copy import deepcopy
+from sqlalchemy import Column, Integer, ForeignKey
+from sqlalchemy.orm import relationship
+from sqlalchemy.ext.hybrid import hybrid_property
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
-from foundry.core.Cursor.Cursor import Cursor, require_a_transaction
-
-from foundry.core.Address.Address import Address
+from foundry.core import Base
 
 
-class Filler:
-    """
-    A representation of a chunk of data at a location inside a container, wrapping the SQLite backend.
-    """
+class Filler(Base):
+    __tablename__ = "fillers"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    address_id = Column(Integer, ForeignKey("address.id"), nullable=False)
+    size = Column(Integer, nullable=False)
 
-    def __init__(self, filler_id: int):
-        self.filler_id = filler_id
+    # different types of valid filler types (select one)
+    draw_update_id = Column(Integer, ForeignKey("draw_update.id"))
 
-    def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self.filler_id})"
+    # relationships
+    address = relationship("Address", remote_side="fillers.address_id")
+    draw_update = relationship("DrawUpdate", remote_side="fillers.draw_update_id", cascade="all, delete-orphan")
 
-    def __str__(self) -> str:
-        return f"{self.__class__.__name__}({self.data})"
+    def __repr__(self):
+        return f"<{self.__class__.__tablename__}({self.address_id}, {self.size})>"
 
     def __bytes__(self) -> bytes:
-        return bytes(self.size)  # Fill in 0s by default
+        b = bytearray(self.size)  # Fill in 0s by default
+        for child in self.children:
+            # Do not enforce using the entire space, but not vise versa
+            child_bytes = bytes(child)
+            b[: len(child_bytes)] = child_bytes
 
-    def __copy__(self):
-        return self.__class__.from_data(self.address, self.size)
+        return bytes(b)
 
-    def __deepcopy__(self):
-        return self.__class__.from_data(deepcopy(self.address), self.size)
+    @hybrid_property
+    def filler_type(self):
+        return self.draw_update_id
 
-    @classmethod
-    @require_a_transaction
-    def from_data(cls, address: Address, size: int, **kwargs):
-        transaction = kwargs["transaction"]
-        c = transaction.cursor
-        c.execute("INSERT INTO Fillers (AddressID, Size) VALUES (?, ?)", (address.address_id, size))
-        return cls(c.lastrowid)
-
-    @property
-    def data(self) -> Tuple[Address, int]:
-        return self.address, self.size
-
-    @property
+    @hybrid_property
     def inside_container(self) -> bool:
-        return self.address.container.size > (self.container_offset + self.size)
+        return self.address.container.size > (self.address.offset + self.size)
 
-    @property
+    @hybrid_property
     def space_remaining(self) -> int:
-        return self.address.container.size - self.container_offset - self.size
+        return self.address.container.size - self.address.offset - self.size
 
-    @property
-    def start_rom_offset(self) -> int:
-        return self.address.rom_offset
 
-    @start_rom_offset.setter
-    def start_rom_offset(self, rom_offset: int):
-        self.address.rom_offset = rom_offset
-
-    @property
-    def end_rom_offset(self) -> int:
-        return self.start_rom_offset + self.size
-
-    @property
-    def start_pc_offset(self) -> int:
-        return self.address.pc_offset
-
-    @start_pc_offset.setter
-    def start_pc_offset(self, pc_offset: int):
-        self.address.pc_offset = pc_offset
-
-    @property
-    def end_pc_offset(self) -> int:
-        return self.start_pc_offset + self.size
-
-    @property
-    def name(self) -> str:
-        return self.address.name
-
-    @name.setter
-    def name(self, name: str):
-        self.address.name = name
-
-    @property
-    def container_offset(self) -> int:
-        return self.address.container_offset
-
-    @container_offset.setter
-    def container_offset(self, container_offset: int):
-        self.address.container_offset = container_offset
-
-    @property
-    def address(self) -> Address:
-        with Cursor() as c:
-            return Address(
-                c.execute("SELECT AddressID FROM Fillers WHERE FillerID = ?", (self.filler_id,)).fetchone()[0]
-            )
-
-    @address.setter
-    @require_a_transaction
-    def address(self, address: Address, **kwargs):
-        transaction = kwargs["transaction"]
-        transaction.connection.execute(
-            "UPDATE Fillers SET AddressID = ? WHERE FillerID = ?", (address.address_id, self.filler_id)
-        )
-
-    @property
-    def size(self) -> int:
-        with Cursor() as c:
-            return c.execute("SELECT Size FROM Fillers WHERE FillerID = ?", (self.filler_id,)).fetchone()[0]
-
-    @size.setter
-    @require_a_transaction
-    def size(self, size: int, **kwargs):
-        transaction = kwargs["transaction"]
-        transaction.connection.execute("UPDATE Fillers SET Size = ? WHERE FillerID = ?", (size, self.filler_id))
+class FillerSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Filler
+        include_fk = True
+        include_relationships = True
+        load_instance = True
