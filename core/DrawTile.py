@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, ForeignKey, ForeignKeyConstraint
 from sqlalchemy.orm import relationship
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
-from foundry.core import Base
+from core import Base
 
 
 class DrawTile(Base):

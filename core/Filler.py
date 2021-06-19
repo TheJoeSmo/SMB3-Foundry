@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
-from foundry.core import Base
+from core import Base
 
 
 class Filler(Base):

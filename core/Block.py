@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
-from foundry.core import Base
+from core import Base
 
 
 class Block(Base):

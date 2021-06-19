@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.ext.orderinglist import ordering_list
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
-from foundry.core import Base
+from core import Base
 
 
 block_group_blocks = Table(
