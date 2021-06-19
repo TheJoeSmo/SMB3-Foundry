@@ -9,6 +9,7 @@ from PySide2.QtWidgets import QApplication, QMessageBox
 from foundry import auto_save_rom_path, github_issue_link
 from foundry.gui.AutoSaveDialog import AutoSaveDialog
 from foundry.gui.settings import load_settings, save_settings
+from foundry.core import create_database
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +25,7 @@ def main(path_to_rom):
     load_settings()
 
     app = QApplication()
+    create_database()
 
     if auto_save_rom_path.exists():
         result = AutoSaveDialog().exec_()
