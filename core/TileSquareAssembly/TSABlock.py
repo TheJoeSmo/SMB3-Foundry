@@ -1,5 +1,5 @@
 from typing import Tuple, List
-from foundry.core.Cursor.Cursor import Cursor, require_a_transaction
+from core.Cursor import Cursor, require_a_transaction
 
 from .Block import Block
 

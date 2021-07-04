@@ -1,4 +1,4 @@
-from foundry.core.File.File import File
+from core import File
 
 
 class FileManager:

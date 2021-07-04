@@ -1,9 +1,9 @@
 from typing import Dict
 
-from foundry.core.TileSquareAssembly.ROM import ROM
-from foundry.core.TileSquareAssembly.TileSquareAssembly import TileSquareAssembly
-from foundry.core.TileSquareAssembly.Block import Block
-from foundry.core.TileSquareAssembly.PatternTable import PatternTable
+from core.TileSquareAssembly.ROM import ROM
+from core.TileSquareAssembly import TileSquareAssembly
+from core.TileSquareAssembly.Block import Block
+from core.TileSquareAssembly import PatternTable
 
 
 def dict_to_rom(d: Dict) -> ROM:

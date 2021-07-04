@@ -3,8 +3,8 @@ from copy import copy
 
 from foundry.game.File import ROM as File
 
-from foundry.core.Cursor.Cursor import Cursor, require_a_transaction
-from foundry.core.Saver.Saver import Saver
+from core.Cursor.Cursor import Cursor, require_a_transaction
+from core.Saver.Saver import Saver
 
 from .Block import Block
 from .PatternTable import PatternTable

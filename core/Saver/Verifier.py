@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from foundry.core.Saver.Saver import Saver
+from core.Saver.Saver import Saver
 
 
 class Verifier(ABC):

@@ -1,8 +1,8 @@
 from copy import copy
 from typing import Callable
 
-from foundry.core.Saver.SmartSaver import SmartSaver
-from foundry.core.Saver.Verifier import Verifier
+from core.Saver.SmartSaver import SmartSaver
+from core.Saver.Verifier import Verifier
 
 
 class SaverManager:

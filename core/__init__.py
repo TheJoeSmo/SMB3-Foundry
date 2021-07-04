@@ -8,33 +8,33 @@ Base = declarative_base()
 
 
 def create_database():
-    # Load all the elements of the database and assert them so Black doesn't complain
-    from foundry.core.Address.Address import Address
+    """
+    Load all the elements of the database and assert that they exist to appease Black
+    Note: The order of imports is very particular.
+            The imports will are a pyramid; they point to the base object.
+    """
 
-    assert issubclass(Address, Base)
-    from foundry.core.Block.Block import Block
+    from core.Block import Block
+    from core.PatternTable import PatternTable
+    from core.BlockGroup import BlockGroup
+    from core.File import File
 
-    assert issubclass(Block, Base)
-    from foundry.core.BlockGroup.BlockGroup import BlockGroup
-
-    assert issubclass(BlockGroup, Base)
-    from foundry.core.Container.Container import Container
+    from core.DrawTile import DrawTile
+    from core.DrawEvent import DrawEvent
+    from core.DrawUpdate import DrawUpdate
+    from core.Filler import Filler
+    from core.Address import Address
+    from core.Container import Container
 
     assert issubclass(Container, Base)
-    from foundry.core.DrawEvent.DrawEvent import DrawEvent
-
+    assert issubclass(Address, Base)
+    assert issubclass(Block, Base)
+    assert issubclass(BlockGroup, Base)
     assert issubclass(DrawEvent, Base)
-    from foundry.core.DrawTile.DrawTile import DrawTile
-
+    assert issubclass(DrawUpdate, Base)
     assert issubclass(DrawTile, Base)
-    from foundry.core.File.File import File
-
     assert issubclass(File, Base)
-    from foundry.core.Filler.Filler import Filler
-
     assert issubclass(Filler, Base)
-    from foundry.core.PatternTable.PatternTable import PatternTable
-
     assert issubclass(PatternTable, Base)
 
-    Base.metadate.createall(engine)
+    Base.metadata.create_all(engine)

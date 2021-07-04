@@ -1,8 +1,8 @@
 from typing import Callable
 from copy import copy
 
-from foundry.core.TileSquareAssembly.ROM import ROM
-from foundry.core.Saver.Verifier import Verifier
+from core.TileSquareAssembly.ROM import ROM
+from core.Saver.Verifier import Verifier
 
 
 class ROMVerifier(Verifier):

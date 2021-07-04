@@ -6,8 +6,8 @@ from PySide2.QtWidgets import QComboBox, QLabel, QLayout, QStatusBar, QToolBar, 
 
 from foundry import icon
 
-from foundry.core.TileSquareAssembly import get_tsa_offset
-from foundry.core.TileSquareAssembly.Block import Block as MetaBlock
+from core.TileSquareAssembly import get_tsa_offset
+from core.TileSquareAssembly.Block import Block as MetaBlock
 
 from foundry.game.gfx.GraphicsSet import GraphicsSet
 from foundry.game.gfx.Palette import PALETTE_GROUPS_PER_OBJECT_SET, bg_color_for_object_set, load_palette_group

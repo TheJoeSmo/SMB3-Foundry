@@ -28,7 +28,7 @@ from foundry.game.gfx.Palette import (
 from foundry.game.level.LevelRef import LevelRef
 from foundry.gui.CustomDialog import CustomDialog
 from foundry.gui.util import clear_layout
-from foundry.core.UndoRedo.UndoRedo import UndoRedo
+from core.UndoRedo.UndoRedo import UndoRedo
 
 
 class PaletteViewer(CustomDialog):

@@ -19,6 +19,3 @@ class Block(Base):
 class BlockSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Block
-        include_fk = True
-        include_relationships = True
-        load_instance = True

@@ -5,9 +5,9 @@ from time import time
 
 from PySide2.QtWidgets import QWidget, QFileDialog
 
-from foundry.core.TileSquareAssembly import load_or_create_database, get_tsa_offset
-from foundry.core.TileSquareAssembly.Saver.JSONROMConverter import rom_to_dict, dict_to_rom
-from foundry.core.TileSquareAssembly.Saver.Controller import Controller
+from core.TileSquareAssembly import load_or_create_database, get_tsa_offset
+from core.TileSquareAssembly.Saver.JSONROMConverter import rom_to_dict, dict_to_rom
+from core.TileSquareAssembly.Saver.Controller import Controller
 from foundry.game.File import ROM as File
 from foundry.game.gfx.drawable.Block import clear_block_cache
 

@@ -5,7 +5,7 @@ from foundry.game.gfx.GraphicsSet import GraphicsSet
 
 from smb3parse.constants import BASE_OFFSET, PAGE_A000_ByTileset, WORLD_MAP_TSA_INDEX
 
-from foundry.core.Cursor.Cursor import Connection
+from core.Cursor.Cursor import Connection
 
 
 root_dir = Path(__file__).parent.parent / "recources"

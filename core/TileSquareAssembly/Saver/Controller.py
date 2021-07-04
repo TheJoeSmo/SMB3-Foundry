@@ -5,10 +5,10 @@ from foundry.game.File import ROM as File
 
 from foundry.gui.ROMResolver import ROMResolver
 
-from foundry.core.Saver.SaverManager import SaverManager
+from core.Saver.SaverManager import SaverManager
 
-from foundry.core.TileSquareAssembly.ROM import ROM
-from foundry.core.TileSquareAssembly.Saver.ROMVerifier import ROMVerifier
+from core.TileSquareAssembly.ROM import ROM
+from core.TileSquareAssembly.Saver import ROMVerifier
 
 
 _refresh_rate = 2

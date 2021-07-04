@@ -14,10 +14,7 @@ class DrawUpdate(Base):
     top_pattern_table_id = Column(Integer, ForeignKey("pattern_tables.id"), nullable=False)
     bottom_pattern_table_id = Column(Integer, ForeignKey("pattern_tables.id"), nullable=False)
 
-    draw_events = relationship("DrawEvent", backref="draw_updates", cascade="all, delete-orphan")
-    top_pattern_table = relationship("PatternTable", remote_side="block_groups.top_pattern_table_id")
-    bottom_pattern_table = relationship("PatternTable", remote_side="block_groups.bottom_pattern_table_id")
-    filler = relationship("Filler", remote_side="block_groups.filler_id")
+    draw_events = relationship("DrawEvent", backref="draw_update", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<{self.__class__.__tablename__}({self.name}, {self.rom_offset}, {self.pc_offset}, {self.size})>"
@@ -32,6 +29,3 @@ class DrawUpdate(Base):
 class DrawUpdateSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = DrawUpdate
-        include_fk = True
-        include_relationships = True
-        load_instance = True

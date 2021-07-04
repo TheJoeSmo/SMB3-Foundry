@@ -1,4 +1,4 @@
-from foundry.core.Cursor.Cursor import Cursor, require_a_transaction
+from core.Cursor.Cursor import Cursor, require_a_transaction
 
 from .TileSquareAssembly import TileSquareAssembly
 

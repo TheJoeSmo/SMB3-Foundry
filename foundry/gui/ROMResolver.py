@@ -2,7 +2,7 @@ from copy import copy
 
 from PySide2.QtWidgets import QWidget, QMessageBox
 
-from foundry.core.TileSquareAssembly.ROM import ROM
+from core.TileSquareAssembly.ROM import ROM
 
 
 class ROMResolver:

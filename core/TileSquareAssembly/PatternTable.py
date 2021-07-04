@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from foundry.core.Cursor.Cursor import Cursor, request_to_be_inside_transaction, require_a_transaction
+from core.Cursor.Cursor import Cursor, request_to_be_inside_transaction, require_a_transaction
 
 
 class PatternTable:

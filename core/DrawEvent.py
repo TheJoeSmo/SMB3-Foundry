@@ -1,5 +1,6 @@
 from enum import Enum
 from sqlalchemy import Column, Integer, Boolean, ForeignKey
+from sqlalchemy import Enum as Enum_
 from sqlalchemy.orm import relationship
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
@@ -13,14 +14,14 @@ class DrawEventType(Enum):
 
 class DrawEvent(Base):
     __tablename__ = "draw_events"
-    draw_update_id = Column(Integer, ForeignKey("draw_updates"), primary_key=True)
-    index = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
+    draw_update_id = Column(Integer, ForeignKey("draw_updates.id"))
+    index = Column(Integer)
     address = Column(Integer, nullable=False)
-    type = Column(Enum(DrawEventType), nullable=False)
+    type = Column(Enum_(DrawEventType), nullable=False)
     repeat = Column(Boolean, nullable=False)
 
-    draw_update = relationship("DrawUpdate", remote_side="draw_events.draw_update_id")
-    tiles = relationship("DrawTiles", backref="draw_events", cascade="all, delete-orphan")
+    tiles = relationship("DrawTile", backref="draw_event", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<{self.__class__.__tablename__}({self.address}, {self.type}, {self.repeat})>"

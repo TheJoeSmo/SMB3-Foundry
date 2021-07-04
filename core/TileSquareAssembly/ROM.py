@@ -1,7 +1,7 @@
 from typing import List, Tuple, Optional
 from copy import copy
 
-from foundry.core.Cursor.Cursor import Cursor, require_a_transaction
+from core.Cursor.Cursor import Cursor, require_a_transaction
 from ..Saver.SmartSaver import SmartSaver
 
 from . import get_tsa_offset, get_tsa_pattern_tables, determine_count_of_tilesets

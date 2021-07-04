@@ -19,6 +19,3 @@ class File(Base):
 class FileSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = File
-        include_fk = True
-        include_relationships = True
-        load_instance = True

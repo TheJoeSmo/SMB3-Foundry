@@ -13,11 +13,11 @@ class Container(Base):
     pc_offset = Column(Integer, nullable=False)
     size = Column(Integer, nullable=False)
     parent_id = Column(Integer, ForeignKey("containers.id"))
-    parent = relationship("Container", remote_side="containers.id")
-    children = relationship(
-        "Container", remote_side="containers.id", backref=backref("children"), cascade="all, delete-orphan"
+
+    parent = relationship(
+        "Container", backref=backref("children", remote_side=[id]), cascade="all, delete-orphan"
     )
-    addresses = relationship("Address", backref="containers", cascade="all, delete-orphan")
+    addresses = relationship("Address", backref="container", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<{self.__class__.__tablename__}({self.name}, {self.rom_offset}, {self.pc_offset}, {self.size})>"
@@ -26,6 +26,3 @@ class Container(Base):
 class ContainerSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Container
-        include_fk = True
-        include_relationships = True
-        load_instance = True
