@@ -9,6 +9,7 @@ class File(Base):
     __tablename__ = "files"
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String)
+    path = Column(String)
     pattern_tables = relationship("PatternTable", backref="file", cascade="all, delete-orphan")
     block_groups = relationship("BlockGroup", backref="file", cascade="all, delete-orphan")
 
@@ -19,3 +20,6 @@ class File(Base):
 class FileSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = File
+
+
+File.__versioned__ = {}

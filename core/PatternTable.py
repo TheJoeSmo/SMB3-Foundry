@@ -21,3 +21,6 @@ class PatternTableSchema(SQLAlchemyAutoSchema):
         include_fk = True
         include_relationships = True
         load_instance = True
+
+
+PatternTable.__versioned__ = {}

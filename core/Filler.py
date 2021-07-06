@@ -43,3 +43,6 @@ class Filler(Base):
 class FillerSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Filler
+
+
+Filler.__versioned__ = {}

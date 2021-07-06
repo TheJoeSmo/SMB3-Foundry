@@ -14,9 +14,7 @@ class Container(Base):
     size = Column(Integer, nullable=False)
     parent_id = Column(Integer, ForeignKey("containers.id"))
 
-    parent = relationship(
-        "Container", backref=backref("children", remote_side=[id]), cascade="all, delete-orphan"
-    )
+    parent = relationship("Container", backref=backref("children", remote_side=[id]), cascade="all, delete-orphan")
     addresses = relationship("Address", backref="container", cascade="all, delete-orphan")
 
     def __repr__(self):
@@ -26,3 +24,6 @@ class Container(Base):
 class ContainerSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Container
+
+
+Container.__versioned__ = {}

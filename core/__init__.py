@@ -1,9 +1,11 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy_continuum import make_versioned
 
 engine = create_engine("sqlite:///:memory:")
 session = scoped_session(sessionmaker(bind=engine))
+make_versioned(user_cls=None)
 Base = declarative_base()
 
 
@@ -18,7 +20,6 @@ def create_database():
     from core.PatternTable import PatternTable
     from core.BlockGroup import BlockGroup
     from core.File import File
-
     from core.DrawTile import DrawTile
     from core.DrawEvent import DrawEvent
     from core.DrawUpdate import DrawUpdate

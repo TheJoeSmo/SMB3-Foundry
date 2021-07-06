@@ -21,3 +21,6 @@ class Address(Base):
 class AddressSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Address
+
+
+Address.__versioned__ = {}

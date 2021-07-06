@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
-
 from core import Base
 
 
@@ -19,3 +18,6 @@ class Block(Base):
 class BlockSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Block
+
+
+Block.__versioned__ = {}

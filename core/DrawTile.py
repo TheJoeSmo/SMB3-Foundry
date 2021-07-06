@@ -18,3 +18,6 @@ class DrawTile(Base):
 class DrawTileSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = DrawTile
+
+
+DrawTile.__versioned__ = {}

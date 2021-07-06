@@ -44,3 +44,6 @@ class DrawEventSchema(SQLAlchemyAutoSchema):
         include_fk = True
         include_relationships = True
         load_instance = True
+
+
+DrawEvent.__versioned__ = {}

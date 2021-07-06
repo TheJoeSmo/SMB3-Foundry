@@ -29,3 +29,6 @@ class DrawUpdate(Base):
 class DrawUpdateSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = DrawUpdate
+
+
+DrawUpdate.__versioned__ = {}

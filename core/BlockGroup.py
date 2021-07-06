@@ -41,3 +41,6 @@ class BlockGroup(Base):
 class BlockGroupSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = BlockGroup
+
+
+BlockGroup.__versioned__ = {}
