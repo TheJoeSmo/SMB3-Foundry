@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
+
 import logging
 import os
 import sys
 import traceback
 
-from PySide2.QtWidgets import QApplication, QMessageBox
+from core import create_database
 
 from foundry import auto_save_rom_path, github_issue_link
-from foundry.gui.AutoSaveDialog import AutoSaveDialog
 from foundry.gui.settings import load_settings, save_settings
-from foundry.core import create_database
 
 logger = logging.getLogger(__name__)
 
@@ -18,14 +17,17 @@ if hasattr(sys, "_MEIPASS"):
     logger.info(f"Changing current dir to {getattr(sys, '_MEIPASS')}")
     os.chdir(getattr(sys, "_MEIPASS"))
 
-from foundry.gui.MainWindow import MainWindow
-
 
 def main(path_to_rom):
+    create_database()
+
     load_settings()
 
+    from PySide2.QtWidgets import QApplication, QMessageBox
+    from foundry.gui.MainWindow import MainWindow
+    from foundry.gui.AutoSaveDialog import AutoSaveDialog
+
     app = QApplication()
-    create_database()
 
     if auto_save_rom_path.exists():
         result = AutoSaveDialog().exec_()
@@ -52,6 +54,8 @@ if __name__ == "__main__":
     try:
         main(path)
     except Exception as e:
+        from PySide2.QtWidgets import QMessageBox
+
         box = QMessageBox()
         box.setWindowTitle("Crash report")
         box.setText(
