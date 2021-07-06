@@ -18,6 +18,7 @@ def create_database():
 
     from core.Block import Block
     from core.PatternTable import PatternTable
+    from core.PatternGroup import PatternGroup
     from core.BlockGroup import BlockGroup
     from core.File import File
     from core.DrawTile import DrawTile
@@ -37,5 +38,6 @@ def create_database():
     assert issubclass(File, Base)
     assert issubclass(Filler, Base)
     assert issubclass(PatternTable, Base)
+    assert issubclass(PatternGroup, Base)
 
     Base.metadata.create_all(engine)

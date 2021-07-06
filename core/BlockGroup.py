@@ -15,14 +15,25 @@ block_group_blocks = Table(
 )
 
 
+block_group_pattern_groups = Table(
+    "block_group_pattern_groups",
+    Base.metadata,
+    Column("block_group_id", Integer, ForeignKey("block_groups.id"), primary_key=True),
+    Column("index", Integer, primary_key=True, autoincrement=True),
+    Column("pattern_group_id", Integer, ForeignKey("pattern_groups.id"), nullable=False),
+)
+
+
 class BlockGroup(Base):
     __tablename__ = "block_groups"
     id = Column(Integer, primary_key=True, autoincrement=True)
     file_id = Column(Integer, ForeignKey("files.id"), nullable=False)
     name = Column(String)
     offset = Column(Integer, nullable=False)
-    top_pattern_table_id = Column(Integer, ForeignKey("pattern_tables.id"), nullable=False)
-    bottom_pattern_table_id = Column(Integer, ForeignKey("pattern_tables.id"), nullable=False)
+
+    pattern_groups = relationship(
+        "PatternGroup", secondary=block_group_pattern_groups, collection_class=ordering_list("index"), cascade="all, delete"
+    )
 
     blocks = relationship(
         "Block", secondary=block_group_blocks, collection_class=ordering_list("index"), cascade="all, delete"

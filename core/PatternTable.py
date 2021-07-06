@@ -1,5 +1,4 @@
 from sqlalchemy import Column, Integer, ForeignKey
-from sqlalchemy.orm import relationship
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 from core import Base
@@ -18,9 +17,6 @@ class PatternTable(Base):
 class PatternTableSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = PatternTable
-        include_fk = True
-        include_relationships = True
-        load_instance = True
 
 
 PatternTable.__versioned__ = {}
