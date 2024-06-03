@@ -47,8 +47,6 @@ jobs:
       run: git push --tags
 
   build_editor:
-    if: startsWith(github.ref, 'refs/tags/')
-
     name: Build ${{ matrix.editor.name }}-${{ matrix.cfg.prefix }}
     runs-on: ${{ matrix.cfg.os }}
     strategy:
@@ -98,8 +96,6 @@ jobs:
           path: dist/${{ matrix.cfg.prefix }}-${{ matrix.editor.name }}${{ matrix.cfg.suffix }}
 
   build_manual:
-    if: startsWith(github.ref, 'refs/tags/')
-
     name: Build Manual
     runs-on: ubuntu-latest
     steps:
