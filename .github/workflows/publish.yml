@@ -5,8 +5,7 @@ on: [push, pull_request]
 jobs:
   set_nightly_tag:
     name: Set nightly tag on dev
-    if: startsWith(github.ref, 'refs/heads/dev')
-
+    
     runs-on: ubuntu-latest
     steps:
     - name: Check out
@@ -169,7 +168,7 @@ jobs:
           release_name: nightly
           body: ${{ steps.release_info.outputs.RELEASE_BODY }}
           draft: false
-          prerelease: ${{ steps.tag_name.outputs.SOURCE_TAG == 'nightly' }}
+          prerelease: true
 
       - name: Download All Artifacts
         uses: actions/download-artifact@v2
