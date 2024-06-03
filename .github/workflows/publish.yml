@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   set_nightly_tag:
-    name: Set nightly tag on dev
+    name: Set nightly tag on patreon
     
     runs-on: ubuntu-latest
     steps:
