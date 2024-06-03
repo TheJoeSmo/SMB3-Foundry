@@ -6,26 +6,62 @@ jobs:
   code_style:
     name: Check Code Style
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - name: Check out
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
-    - name: Coding Style Check
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.11"
+        architecture: x64
+
+    - name: Download packages
       run: |
-        python3 -m pip install --upgrade pip
-        python3 -m pip install flake8 black
-        python3 -m black -l 120 --check foundry/ smb3parse/
-        python3 -m flake8 foundry/ smb3parse/
+        python3.11 -m pip install --upgrade pip
+        python3.11 -m pip install flake8 black
+
+    - name: Black
+      run: python3.11 -m black -l 120 --check --diff foundry scribe smb3parse
+
+    - name: Flake8
+      run: python3.11 -m flake8 foundry scribe smb3parse
+
+  static_analysis:
+    name: Static Analysis
+
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.11"
+        architecture: x64
+
+    - name: Download packages
+      run: |
+        python3.11 -m pip install --upgrade pip
+        python3.11 -m pip install refurb mypy
+
+    - name: mypy
+      run: python3.11 -m mypy foundry scribe smb3parse
+
+    - name: refurb
+      run: python3.11 -m refurb foundry scribe smb3parse
+
 
   set_nightly_tag:
     name: Set nightly tag on dev
     if: startsWith(github.ref, 'refs/heads/dev')
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - name: Check out
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
         token: ${{ secrets.GH_PAT }}
@@ -43,7 +79,7 @@ jobs:
       run: git tag --delete nightly || true
 
     - name: Set new nightly tag
-      run: 'git tag --annotate nightly -m "Nightly
+      run: 'git tag --annotate nightly -m "+$(git rev-list --count origin/master..HEAD) commits
 
 
       CAUTION: Nightlies are untested alpha releases. Most users should use ''$(git describe --tags --exclude=nightly --abbrev=0)''!
@@ -65,24 +101,27 @@ jobs:
     needs: code_style
     if: startsWith(github.ref, 'refs/tags/')
 
-    name: Build ${{ matrix.config.prefix }}
-    runs-on: ${{ matrix.config.os }}
+    name: Build ${{ matrix.editor.name }}-${{ matrix.cfg.prefix }}
+    runs-on: ${{ matrix.cfg.os }}
     strategy:
       matrix:
-        config:
-        - {os: ubuntu-20.04, exe: 'smb3-foundry', prefix: 'linux', suffix: '', architecture: 'x64'}
-        - {os: windows-2019, exe: 'smb3-foundry.exe', prefix: 'win64', suffix: '.exe', architecture: 'x64'}
-        - {os: windows-2019, exe: 'smb3-foundry.exe', prefix: 'win32', suffix: '.exe', architecture: 'x86'}
-        - {os: macos-latest, exe: 'smb3-foundry', prefix: 'osx', suffix: '', architecture: 'x64'}
+        cfg:
+          - {os: ubuntu-22.04, prefix: 'linux', suffix: '', architecture: 'x64'}
+          - {os: windows-2019, prefix: 'win64', suffix: '.exe', architecture: 'x64'}
+          - {os: macos-latest, prefix: 'osx', suffix: '', architecture: 'x64'}
+        editor:
+          - {name: 'smb3-foundry'}
+          - {name: 'smb3-scribe'}
 
     steps:
       - name: Check out
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          architecture: ${{ matrix.config.architecture }}
+          python-version: "3.11"
+          architecture: ${{ matrix.cfg.architecture }}
 
       - name: Display Python version
         run: python -c "import sys; print(sys.version)"
@@ -93,43 +132,59 @@ jobs:
           python -m pip install -r requirements.txt
           python -m pip install pyinstaller
 
+      - name: Ubuntu Only
+        if: ${{ matrix.cfg.prefix == 'linux' }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libegl1 libxcb-shape0 libqt5gui5
+
       - name: Build Executable
         run: |
-          pyinstaller smb3-foundry.spec
-          mv dist/${{ matrix.config.exe }} dist/${{ matrix.config.prefix }}-smb3-foundry${{ matrix.config.suffix }}
+          pyinstaller ${{ matrix.editor.name }}.spec
+          mv dist/${{ matrix.editor.name }}${{ matrix.cfg.suffix }} dist/${{ matrix.cfg.prefix }}-${{ matrix.editor.name }}${{ matrix.cfg.suffix }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.config.prefix }}-smb3-foundry${{ matrix.config.suffix }}
-          path: dist/${{ matrix.config.prefix }}-smb3-foundry${{ matrix.config.suffix }}
+          name: ${{ matrix.cfg.prefix }}-${{ matrix.editor.name }}${{ matrix.cfg.suffix }}
+          path: dist/${{ matrix.cfg.prefix }}-${{ matrix.editor.name }}${{ matrix.cfg.suffix }}
 
   build_manual:
     needs: code_style
     if: startsWith(github.ref, 'refs/tags/')
 
     name: Build Manual
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Check out
-        uses: actions/checkout@v2
-
-      - name: Setup node/npm
-        uses: actions/setup-node@v2
+        uses: actions/checkout@v3
 
       - name: Get Dependencies
         run: |
-          npm install markdown-pdf
-          wget https://github.com/sindresorhus/github-markdown-css/blob/gh-pages/github-markdown.css
+          sudo apt-get update
+          sudo apt-get install pandoc texlive-latex-base texlive-fonts-recommended texlive-extra-utils texlive-latex-extra
 
-      - name: Build PDF
-        run: node_modules/.bin/markdown-pdf --css-path github-markdwon.css MANUAL.md
+      - name: Build PDFs
+        run: |
+          pushd manual/foundry/
+          pandoc foundry-manual.md -o manual-foundry.pdf
+          popd
+          pushd manual/scribe/
+          pandoc scribe-manual.md -o manual-scribe.pdf
+          popd
 
-      - name: Upload Artifact
+
+      - name: Upload Foundry Manual
         uses: actions/upload-artifact@v2
         with:
-          name: MANUAL.pdf
-          path: MANUAL.pdf
+          path: manual/foundry/manual-foundry.pdf
+          name: manual-foundry
+
+      - name: Upload Scribe Manual
+        uses: actions/upload-artifact@v2
+        with:
+          path: manual/scribe/manual-scribe.pdf
+          name: manual-scribe
 
   # We're forced to create a separate publish job since the create-release
   # action fails if it is run twice on the same tag. But we have multiple
@@ -140,9 +195,15 @@ jobs:
     runs-on: ubuntu-latest  # this doesn't matter as it's only codestyle and artifact collection
     steps:
       - name: Check out
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.11"
+          architecture: x64
 
       - name: Set environment tag name
         id: tag_name
@@ -156,7 +217,7 @@ jobs:
           echo ::set-output name=RELEASE_BODY::"$(git tag --format="%(body)" --points-at ${{ steps.tag_name.outputs.SOURCE_TAG }} | head -n +3)"
 
       - name: Check for correct tag
-        run: python3 .ci-tag-check.py
+        run: python3.11 .ci-tag-check.py
         env:
           TAG_NAME: ${{ steps.tag_name.outputs.SOURCE_TAG }}
 
@@ -170,7 +231,7 @@ jobs:
           release_name: ${{ steps.release_info.outputs.RELEASE_NAME }}
           body: ${{ steps.release_info.outputs.RELEASE_BODY }}
           draft: false
-          prerelease: true
+          prerelease: ${{ steps.tag_name.outputs.SOURCE_TAG == 'nightly' }}
 
       - name: Download All Artifacts
         uses: actions/download-artifact@v2
@@ -209,14 +270,34 @@ jobs:
           asset_name: "win64-smb3-foundry.exe"
           asset_content_type: application/octet-stream
 
-      - name: Upload SMB3 Foundry Windows x32
+      - name: Upload SMB3 Scribe Linux
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: "artifacts/win32-smb3-foundry.exe/win32-smb3-foundry.exe"
-          asset_name: "win32-smb3-foundry.exe"
+          asset_path: "artifacts/linux-smb3-scribe/linux-smb3-scribe"
+          asset_name: "linux-smb3-scribe"
+          asset_content_type: application/octet-stream
+
+      - name: Upload SMB3 Scribe OSX
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: "artifacts/osx-smb3-scribe/osx-smb3-scribe"
+          asset_name: "osx-smb3-scribe"
+          asset_content_type: application/octet-stream
+
+      - name: Upload SMB3 Scribe Windows x64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: "artifacts/win64-smb3-scribe.exe/win64-smb3-scribe.exe"
+          asset_name: "win64-smb3-scribe.exe"
           asset_content_type: application/octet-stream
 
       - name: Upload SMB3 Foundry Manual
@@ -225,6 +306,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: "artifacts/MANUAL.pdf/MANUAL.pdf"
-          asset_name: "MANUAL.pdf"
+          asset_path: "artifacts/manual-foundry/manual-foundry.pdf"
+          asset_name: "manual-foundry.pdf"
+          asset_content_type: application/pdf
+
+      - name: Upload SMB3 Scribe Manual
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: "artifacts/manual-scribe/manual-scribe.pdf"
+          asset_name: "manual-scribe.pdf"
           asset_content_type: application/pdf
