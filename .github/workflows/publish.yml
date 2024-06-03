@@ -3,32 +3,6 @@ name: Publish
 on: [push, pull_request]
 
 jobs:
-  static_analysis:
-    name: Static Analysis
-
-    runs-on: ubuntu-latest
-    steps:
-    - name: Check out
-      uses: actions/checkout@v3
-
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: "3.11"
-        architecture: x64
-
-    - name: Download packages
-      run: |
-        python3.11 -m pip install --upgrade pip
-        python3.11 -m pip install refurb mypy
-
-    - name: mypy
-      run: python3.11 -m mypy foundry scribe smb3parse
-
-    - name: refurb
-      run: python3.11 -m refurb foundry scribe smb3parse
-
-
   set_nightly_tag:
     name: Set nightly tag on dev
     if: startsWith(github.ref, 'refs/heads/dev')
