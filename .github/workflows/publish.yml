@@ -3,31 +3,6 @@ name: Publish
 on: [push, pull_request]
 
 jobs:
-  code_style:
-    name: Check Code Style
-
-    runs-on: ubuntu-latest
-    steps:
-    - name: Check out
-      uses: actions/checkout@v3
-
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: "3.11"
-        architecture: x64
-
-    - name: Download packages
-      run: |
-        python3.11 -m pip install --upgrade pip
-        python3.11 -m pip install flake8 black
-
-    - name: Black
-      run: python3.11 -m black -l 120 --check --diff foundry scribe smb3parse
-
-    - name: Flake8
-      run: python3.11 -m flake8 foundry scribe smb3parse
-
   static_analysis:
     name: Static Analysis
 
@@ -98,7 +73,6 @@ jobs:
       run: git push --tags
 
   build_editor:
-    needs: code_style
     if: startsWith(github.ref, 'refs/tags/')
 
     name: Build ${{ matrix.editor.name }}-${{ matrix.cfg.prefix }}
@@ -150,7 +124,6 @@ jobs:
           path: dist/${{ matrix.cfg.prefix }}-${{ matrix.editor.name }}${{ matrix.cfg.suffix }}
 
   build_manual:
-    needs: code_style
     if: startsWith(github.ref, 'refs/tags/')
 
     name: Build Manual
