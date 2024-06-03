@@ -171,7 +171,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: ${{ steps.release_info.outputs.RELEASE_NAME }}
+          release_name: nightly
           body: ${{ steps.release_info.outputs.RELEASE_BODY }}
           draft: false
           prerelease: ${{ steps.tag_name.outputs.SOURCE_TAG == 'nightly' }}
