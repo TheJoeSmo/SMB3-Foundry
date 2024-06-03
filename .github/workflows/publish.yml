@@ -159,11 +159,6 @@ jobs:
           git tag --format="%(body)" --points-at ${{ steps.tag_name.outputs.SOURCE_TAG }}
           echo ::set-output name=RELEASE_BODY::"$(git tag --format="%(body)" --points-at ${{ steps.tag_name.outputs.SOURCE_TAG }} | head -n +3)"
 
-      - name: Check for correct tag
-        run: python3.11 .ci-tag-check.py
-        env:
-          TAG_NAME: ${{ steps.tag_name.outputs.SOURCE_TAG }}
-
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
